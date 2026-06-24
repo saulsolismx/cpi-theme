@@ -1,8 +1,50 @@
-// CPI visual adjustments
+// CPI visual adjustments — navy dominante
 body { font-family: 'Poppins', 'Roboto', sans-serif; line-height: 1.6; }
-.navbar { background-color: $cpi-navy !important; }
-.navbar .navbar-brand, .navbar .nav-link { color: #fff !important; }
-.btn-primary { background-color: $cpi-navy; border-color: $cpi-navy; }
-.btn-primary:hover { background-color: $cpi-navy-dark; border-color: $cpi-navy-dark; }
-.btn-secondary { background-color: $cpi-gold; border-color: $cpi-gold; color: $cpi-navy; }
-.btn-secondary:hover { background-color: $cpi-gold-light; border-color: $cpi-gold-light; color: $cpi-navy-dark; }
+
+// Navbar navy sólida
+.navbar {
+  background-color: $cpi-navy !important;
+  box-shadow: 0 2px 8px rgba(0, 34, 86, 0.15);
+}
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar .navbar-nav .nav-link {
+  color: #fff !important;
+}
+.navbar .nav-link:hover { color: $cpi-grey-200 !important; }
+
+// Botones pill
+.btn {
+  border-radius: 50rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-weight: 500;
+}
+.btn-primary {
+  background-color: $cpi-navy;
+  border-color: $cpi-navy;
+  box-shadow: 0 4px 12px rgba(0, 34, 86, 0.25);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: $cpi-navy-dark;
+  border-color: $cpi-navy-dark;
+}
+.btn-secondary {
+  background-color: transparent;
+  border-color: $cpi-navy;
+  color: $cpi-navy;
+}
+.btn-secondary:hover {
+  background-color: $cpi-navy;
+  color: #fff;
+}
+
+// Enlaces y acentos
+a { color: $cpi-navy; }
+a:hover { color: $cpi-navy-dark; }
+
+// Login: fondo navy para que el logo blanco luzca
+body.pagelayout-login #page {
+  background-color: $cpi-navy;
+}

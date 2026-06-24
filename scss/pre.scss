@@ -1,21 +1,30 @@
-// CPI brand tokens
-$cpi-navy:       #182b53;
-$cpi-navy-dark:  #0e1d38;
-$cpi-navy-light: #243d6e;
-$cpi-gold:       #c9a227;
-$cpi-gold-light: #e4be50;
+// CPI brand tokens — navy dominante (color exacto del logo)
+$cpi-navy:       #002256;
+$cpi-navy-dark:  #001a40;
+$cpi-navy-light: #1a3a6e;
 $cpi-grey-50:    #f8f9fb;
+$cpi-grey-100:   #f1f3f7;
 $cpi-grey-200:   #e2e6ec;
 $cpi-grey-500:   #6b7280;
+$cpi-grey-700:   #374151;
 $cpi-grey-900:   #111827;
 
 $primary:    $cpi-navy;
-$secondary:  $cpi-gold;
+$secondary:  $cpi-grey-500;
 $body-color: $cpi-grey-900;
 $body-bg:    #ffffff;
 $link-color: $cpi-navy;
+$link-hover-color: $cpi-navy-dark;
 
 $font-family-sans-serif: 'Poppins', 'Roboto', system-ui, -apple-system, "Segoe UI", sans-serif;
 $font-size-base:   1rem;
 $line-height-base: 1.6;
 $headings-font-weight: 600;
+
+// Botones tipo pill (estilo del sitio) y sombras suaves
+$border-radius:    0.5rem;
+$border-radius-lg: 0.75rem;
+$btn-border-radius: 50rem;
+$btn-border-radius-lg: 50rem;
+$btn-border-radius-sm: 50rem;
+$btn-padding-x: 1.5rem;
