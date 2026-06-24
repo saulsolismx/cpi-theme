@@ -1,0 +1,17 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+*.swp
+*~
+.idea/
+.vscode/
+
+# Node (por si se usa npm para desarrollo)
+node_modules/
+
+# Moodle genera el CSS compilado en moodledata, no aquí.
+# Si alguna herramienta local genera CSS, ignorarlo:
+*.css
+!*.min.css

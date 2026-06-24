@@ -1,0 +1,8 @@
+// CPI visual adjustments
+body { font-family: 'Poppins', 'Roboto', sans-serif; line-height: 1.6; }
+.navbar { background-color: $cpi-navy !important; }
+.navbar .navbar-brand, .navbar .nav-link { color: #fff !important; }
+.btn-primary { background-color: $cpi-navy; border-color: $cpi-navy; }
+.btn-primary:hover { background-color: $cpi-navy-dark; border-color: $cpi-navy-dark; }
+.btn-secondary { background-color: $cpi-gold; border-color: $cpi-gold; color: $cpi-navy; }
+.btn-secondary:hover { background-color: $cpi-gold-light; border-color: $cpi-gold-light; color: $cpi-navy-dark; }
