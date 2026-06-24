@@ -13,8 +13,11 @@ body { font-family: 'Poppins', 'Roboto', sans-serif; line-height: 1.6; }
 }
 .navbar .nav-link:hover { color: $cpi-grey-200 !important; }
 
-// Botones pill
-.btn {
+// Botones pill — solo botones de acción reales, sin afectar navegación lateral
+.btn-primary,
+.btn-secondary,
+.btn-outline-primary,
+.btn-outline-secondary {
   border-radius: 50rem;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
@@ -47,4 +50,21 @@ a:hover { color: $cpi-navy-dark; }
 // Login: fondo navy para que el logo blanco luzca
 body.pagelayout-login #page {
   background-color: $cpi-navy;
+}
+
+// Fix: árbol de navegación lateral colapsado por padding/margin acumulado en uls anidados
+.block.block_navigation .block_tree ul,
+.block_settings .block_tree ul,
+.block.block_navigation .block_tree li > ul,
+.block_settings .block_tree li > ul {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 1rem;
+}
+// Asegurar que el texto de los nodos haga wrap normal por palabras, no por letra
+.block.block_navigation .block_tree .item-content-wrap,
+.block.block_navigation .block_tree p,
+.block_settings .block_tree p {
+  overflow-wrap: break-word;
+  word-break: normal;
 }
