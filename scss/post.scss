@@ -1,5 +1,5 @@
 // CPI visual adjustments — navy dominante
-body { font-family: 'Poppins', 'Roboto', sans-serif; line-height: 1.6; }
+body { line-height: 1.6; }
 
 // Navbar navy sólida
 .navbar {
@@ -72,4 +72,21 @@ body.pagelayout-login #page {
 // My Progress block — barras de progreso en navy CPI (override del bg-success de Bootstrap)
 .block_myprogress .progress-bar {
   background-color: $cpi-navy !important;
+}
+
+// === Cubeta 2: refinamiento estilo welearning ===
+// Cuerpo en Roboto, títulos en Poppins
+body { font-family: 'Roboto', sans-serif; }
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+// Fondo gris claro
+body { background-color: #f6f7f9; }
+// Cards blancas con borde sutil (look welearning)
+.card {
+  background-color: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 0.5rem;
 }

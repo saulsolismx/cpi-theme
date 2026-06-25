@@ -12,11 +12,12 @@ $cpi-grey-900:   #111827;
 $primary:    $cpi-navy;
 $secondary:  $cpi-grey-500;
 $body-color: $cpi-grey-900;
-$body-bg:    #ffffff;
+$body-bg:    #f6f7f9;
 $link-color: $cpi-navy;
 $link-hover-color: $cpi-navy-dark;
 
-$font-family-sans-serif: 'Poppins', 'Roboto', system-ui, -apple-system, "Segoe UI", sans-serif;
+$font-family-sans-serif: 'Roboto', system-ui, -apple-system, "Segoe UI", sans-serif;
+$headings-font-family:   'Poppins', 'Roboto', sans-serif;
 $font-size-base:   1rem;
 $line-height-base: 1.6;
 $headings-font-weight: 600;
