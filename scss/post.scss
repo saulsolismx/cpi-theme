@@ -68,3 +68,8 @@ body.pagelayout-login #page {
   overflow-wrap: break-word;
   word-break: normal;
 }
+
+// My Progress block — barras de progreso en navy CPI (override del bg-success de Bootstrap)
+.block_myprogress .progress-bar {
+  background-color: $cpi-navy !important;
+}
