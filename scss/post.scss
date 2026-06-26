@@ -92,9 +92,10 @@ body { background-color: #f6f7f9; }
   box-shadow: 0 1px 3px rgba(0, 34, 86, 0.06);
 }
 
-// === Level Up XP (block_xp) — acentos y barras en navy CPI ===
-.xp-bg-indigo-500,
-.block_xp-level-progress [role='progressbar'],
-.xp-bg-green-400 {
+// Level Up XP (block_xp) — RELLENO de barra y acentos en navy CPI.
+// Sólo el relleno (.xp-bg-green-400 / .xp-bg-indigo-500); NO el contenedor
+// [role='progressbar'] (es la pista gris y debe quedar gris).
+.block_xp .xp-bg-green-400,
+.block_xp .xp-bg-indigo-500 {
   background-color: #002256 !important;
 }
