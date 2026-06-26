@@ -99,3 +99,17 @@ body { background-color: #f6f7f9; }
 .block_xp .xp-bg-indigo-500 {
   background-color: #002256 !important;
 }
+
+// Login en viewport angosto (<992px): el aside de bienvenida se oculta y el
+// formulario queda sobre el #page navy, perdiendo contraste. Tarjeta blanca
+// al contenedor del formulario; no afecta escritorio ni otras páginas.
+@include media-breakpoint-down(lg) {
+  body.pagelayout-login {
+    #region-main-box.login-layout-right-content {
+      background-color: #fff;
+      border-radius: 0.75rem;
+      padding: 2rem;
+      box-shadow: 0 4px 16px rgba(0, 34, 86, 0.15);
+    }
+  }
+}
