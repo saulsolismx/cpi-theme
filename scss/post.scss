@@ -91,3 +91,10 @@ body { background-color: #f6f7f9; }
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 34, 86, 0.06);
 }
+
+// === Level Up XP (block_xp) — acentos y barras en navy CPI ===
+.xp-bg-indigo-500,
+.block_xp-level-progress [role='progressbar'],
+.xp-bg-green-400 {
+  background-color: #002256 !important;
+}
