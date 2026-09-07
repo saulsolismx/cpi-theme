@@ -114,6 +114,65 @@ body.pagelayout-login #region-main-box.login-layout-right-content {
   }
 }
 
+// === Fase 1.1: fixes de verificación visual ===
+
+// Fix 1 — Texto legible sobre contenedores navy (login panel + navbar).
+// Ataca el subtítulo del login (.text-muted), labels y "Modo de edición".
+body.pagelayout-login #region-main-box.login-layout-right-content {
+  .text-muted,
+  .login-instructions,
+  .form-label {
+    color: rgba(255, 255, 255, 0.75) !important;
+  }
+}
+.navbar.fixed-top {
+  .editmode-switch-form label,
+  .form-check-label,
+  .text-muted {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+}
+
+// Fix 2 — Botón primario del login: gold sobre navy (texto navy).
+body.pagelayout-login #region-main-box.login-layout-right-content {
+  .btn-primary {
+    background-color: $cpi-gold;
+    border-color: $cpi-gold;
+    color: $cpi-navy;
+    font-weight: 600;
+
+    &:hover, &:focus {
+      background-color: $cpi-gold-light;
+      border-color: $cpi-gold-light;
+      color: $cpi-navy;
+    }
+  }
+}
+
+// Fix 3 — Aviso de cookies + enlaces de políticas legibles sobre navy.
+// Selector real del login: .login-cookiesnotice contiene un <button class="btn btn-link">.
+body.pagelayout-login {
+  .login-cookiesnotice .btn-link {
+    color: $cpi-gold-light;
+    text-decoration: underline;
+  }
+  .sitelink,
+  .tool_policy,
+  [class*="policy"] {
+    color: rgba(255, 255, 255, 0.75);
+    a { color: $cpi-gold-light; }
+  }
+}
+
+// Fix 5 — PROVISIONAL: oculta el copy default de Moodle en el aside izquierdo.
+// El texto real son strings del core (loginwelcometitle/description/tagline/stats).
+// Arreglo correcto: configurar instrucciones de autenticación (leftinstructions),
+// que reemplaza este mismo contenedor.
+// ⚠️ Al configurar leftinstructions, QUITAR esta regla o ocultará el copy nuevo.
+body.pagelayout-login aside.login-layout-left .login-layout-left-content {
+  display: none;
+}
+
 // Login en viewport angosto (<992px): el aside de bienvenida se oculta y el
 // formulario queda sobre el #page navy, perdiendo contraste. Tarjeta blanca
 // al contenedor del formulario; no afecta escritorio ni otras páginas.
@@ -135,6 +194,16 @@ body.pagelayout-login #region-main-box.login-layout-right-content {
       }
       a {
         color: $cpi-navy;
+      }
+
+      // Fix 4 — En la tarjeta blanca el logo blanco desaparece. Filtro que lo
+      // aproxima a navy (sin segundo archivo de logo). Selector real: #logoimage
+      // dentro de #loginlogo (boost no usa .login-logo).
+      #loginlogo img,
+      #logoimage {
+        filter: brightness(0) saturate(100%) invert(11%) sepia(45%)
+          saturate(4000%) hue-rotate(210deg) brightness(90%);
+        max-height: 120px;
       }
     }
   }
