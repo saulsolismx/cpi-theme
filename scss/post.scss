@@ -239,3 +239,93 @@ body.pagelayout-mydashboard {
   margin-bottom: 1rem;
   padding: 1rem 1.25rem;
 }
+
+// === Fase 2: dashboard estilo welearning ===
+
+// Bloque D — Tarjetas de curso en "Vista general de curso" (block_myoverview).
+// Selectores reales verificados en core_course/coursecard (5.2).
+body.pagelayout-mydashboard .block_myoverview {
+  .card.course-card {
+    border: 1px solid $cpi-grey-200;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 34, 86, 0.06);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+      box-shadow: 0 6px 20px rgba(0, 34, 86, 0.14);
+      transform: translateY(-2px);
+    }
+
+    .course-info-container {
+      padding: 0.85rem 1rem;
+    }
+
+    .coursename {
+      font-weight: 600;
+      color: $cpi-grey-900;
+      font-size: 0.95rem;
+    }
+
+    // En Moodle 5.2 la tarjeta ya NO tiene barra visual (.progress). El
+    // progreso es solo texto: .progress-text con "X% completado". Acento gold
+    // al porcentaje en vez de recolorear una barra inexistente.
+    .progress-text {
+      color: $cpi-gold;
+      font-weight: 600;
+    }
+  }
+}
+
+// Bloque E — Encabezados de bloque como headers de widget.
+// Real: <h3 class="h5 card-title d-inline"> (es h3, no h5, y es inline). Un
+// border-bottom sobre el título inline solo subrayaría el texto; el divisor
+// full-width va sobre el contenido sibling (.card-text.content). Tamaño/peso
+// del título ya definidos en el bloque de densidad de arriba.
+body.pagelayout-mydashboard .block {
+  .card-title {
+    color: $cpi-grey-900;
+  }
+  .card-text.content {
+    border-top: 1px solid $cpi-grey-100;
+    padding-top: 0.75rem;
+  }
+}
+
+// Bloque F — Calendario lateral compacto (block_calendar_month → month_mini).
+body.pagelayout-mydashboard .block_calendar_month {
+  .calendartable {
+    font-size: 0.8rem;
+
+    td, th {
+      padding: 0.25rem;
+    }
+  }
+
+  // Día actual: círculo navy. En month_mini NO existe .day-number-circle; el
+  // número del día es un <a data-region="mini-day-link"> o un <span aria-hidden>.
+  .calendartable td.today {
+    a,
+    span[aria-hidden="true"] {
+      display: inline-block;
+      min-width: 1.6rem;
+      line-height: 1.6rem;
+      border-radius: 50%;
+      background-color: $cpi-navy;
+      color: #fff;
+      text-align: center;
+    }
+  }
+}
+
+// Bloque G — Level Up XP (block_xp): solo color, sin tocar layout.
+// El plugin usa utilidades xp-* (Tailwind). Único acento fuera de marca:
+// xp-border-sky-400 (borde azul del usuario destacado en el ranking) → navy,
+// coherente con el relleno navy de barras (commits 996e3f9, 21e1430).
+// No existe .xp-badge; .block_xp-level/.level-badge son la gráfica del nivel
+// (no se recolorean).
+body.pagelayout-mydashboard .block_xp {
+  .xp-border-sky-400 {
+    border-color: $cpi-navy !important;
+  }
+}
