@@ -164,13 +164,20 @@ body.pagelayout-login {
   }
 }
 
-// Fix 5 — PROVISIONAL: oculta el copy default de Moodle en el aside izquierdo.
-// El texto real son strings del core (loginwelcometitle/description/tagline/stats).
-// Arreglo correcto: configurar instrucciones de autenticación (leftinstructions),
-// que reemplaza este mismo contenedor.
-// ⚠️ Al configurar leftinstructions, QUITAR esta regla o ocultará el copy nuevo.
-body.pagelayout-login aside.login-layout-left .login-layout-left-content {
-  display: none;
+// Fix 5 RESUELTO: el copy real vive en auth_instructions (leftinstructions) y
+// el aside lo renderiza; Boost ya le da color:#fff sobre fondo oscuro. La regla
+// provisional que ocultaba .login-layout-left-content se eliminó por completo.
+
+// Fix 6 — Contraste en modales del layout de login (p. ej. confirmación de
+// logout). El .modal-content tiene fondo claro (#f6f7f9) pero se renderiza
+// dentro de #region-main-box, así que su <p> queda alcanzado por los blancos
+// de texto-sobre-navy (Bloque A: #region-main-box... p). Se fuerza texto oscuro
+// dentro de cualquier .modal-content del login. Especificidad mayor que Bloque A
+// y Fix 1 (comparte #region-main-box.login-layout-right-content y suma .modal-content).
+body.pagelayout-login #region-main-box.login-layout-right-content .modal-content {
+  h1, h2, h3, p, label, .text-muted, .login-instructions, .form-label {
+    color: $cpi-grey-900 !important;
+  }
 }
 
 // Login en viewport angosto (<992px): el aside de bienvenida se oculta y el
