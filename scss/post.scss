@@ -325,3 +325,15 @@ body.pagelayout-mydashboard .block_xp {
     border-color: $cpi-navy !important;
   }
 }
+
+// === Fase 3: fix título duplicado en actividades ===
+// En páginas de módulo el activity header pinta <h1 class="h2"> con el nombre
+// (dentro de .page-header-headings, en el <header>), y además el módulo imprime
+// su propio <h2>nombre</h2> con $OUTPUT->heading() dentro de #region-main.
+// Ese <h2> redundante es el hermano ADYACENTE a #maincontent (precede a
+// .activity-header; el contenido real va después, nunca en esa posición).
+// Se oculta solo en páginas de actividad (body.path-mod); el <h1> del header
+// permanece como título. Es comportamiento core, no override del tema.
+body.path-mod #region-main #maincontent + h2 {
+  display: none;
+}
