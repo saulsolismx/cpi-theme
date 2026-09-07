@@ -100,6 +100,20 @@ body { background-color: #f6f7f9; }
   background-color: #002256 !important;
 }
 
+// Login desktop: textos sobre fondo navy deben ser legibles
+body.pagelayout-login #region-main-box.login-layout-right-content {
+  .login-heading,
+  h1, h2 {
+    color: #fff;
+  }
+  p, .login-instructions, label {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  a {
+    color: $cpi-gold-light;
+  }
+}
+
 // Login en viewport angosto (<992px): el aside de bienvenida se oculta y el
 // formulario queda sobre el #page navy, perdiendo contraste. Tarjeta blanca
 // al contenedor del formulario; no afecta escritorio ni otras páginas.
@@ -110,6 +124,49 @@ body { background-color: #f6f7f9; }
       border-radius: 0.75rem;
       padding: 2rem;
       box-shadow: 0 4px 16px rgba(0, 34, 86, 0.15);
+
+      // Revierte los blancos del bloque desktop: sobre la tarjeta blanca el
+      // texto debe ser oscuro. Misma especificidad + orden posterior => gana
+      // solo cuando el media query aplica (<992px).
+      .login-heading,
+      h1, h2,
+      p, .login-instructions, label {
+        color: $cpi-grey-900;
+      }
+      a {
+        color: $cpi-navy;
+      }
     }
   }
+}
+
+// Dashboard más denso, estilo welearning
+body.pagelayout-mydashboard {
+  font-size: 0.9rem;
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  #region-main .card .card-body {
+    padding: 1rem 1.25rem;
+  }
+
+  .block .card-title,
+  .block h5 {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+}
+
+// Bloques laterales con look de card welearning
+[data-region="blocks-column"] .block,
+#block-region-side-pre .block {
+  background: #fff;
+  border: 1px solid $cpi-grey-200;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 34, 86, 0.06);
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
 }
