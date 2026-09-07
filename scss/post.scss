@@ -229,7 +229,9 @@ body.pagelayout-mydashboard {
   }
 }
 
-// Bloques laterales con look de card welearning
+// Bloques laterales con look de card welearning.
+// Sin padding propio: el .card-body.p-3 interno ya aporta el respiro (si se
+// agrega aquí se acumula con ese padding y el contenido se corta).
 [data-region="blocks-column"] .block,
 #block-region-side-pre .block {
   background: #fff;
@@ -237,7 +239,6 @@ body.pagelayout-mydashboard {
   border-radius: 0.75rem;
   box-shadow: 0 2px 8px rgba(0, 34, 86, 0.06);
   margin-bottom: 1rem;
-  padding: 1rem 1.25rem;
 }
 
 // === Fase 2: dashboard estilo welearning ===
@@ -287,7 +288,7 @@ body.pagelayout-mydashboard .block {
     color: $cpi-grey-900;
   }
   .card-text.content {
-    border-top: 1px solid $cpi-grey-100;
+    border-top: 1px solid $cpi-grey-200;
     padding-top: 0.75rem;
   }
 }
@@ -302,19 +303,14 @@ body.pagelayout-mydashboard .block_calendar_month {
     }
   }
 
-  // Día actual: círculo navy. En month_mini NO existe .day-number-circle; el
-  // número del día es un <a data-region="mini-day-link"> o un <span aria-hidden>.
-  .calendartable td.today {
-    a,
-    span[aria-hidden="true"] {
-      display: inline-block;
-      min-width: 1.6rem;
-      line-height: 1.6rem;
-      border-radius: 50%;
-      background-color: $cpi-navy;
-      color: #fff;
-      text-align: center;
-    }
+  // Día actual: recolor del círculo NATIVO. Gotcha: el DOM renderizado sí trae
+  // span > span.day-number-circle > span.day-number, aunque month_mini.mustache
+  // no lo muestre. Solo color (sin dimensiones propias): el círculo nativo ya
+  // trae su geometría y así evitamos pintar un segundo círculo encima y el
+  // line-height:0 heredado.
+  .calendartable td.today .day-number-circle {
+    background-color: $cpi-navy;
+    color: #fff;
   }
 }
 
