@@ -1,0 +1,51 @@
+{{!
+    @template theme_cpi/course_banner
+
+    Banner de cabecera de curso (Capa 2). Se inyecta vía hook solo en vista de curso.
+
+    Contexto:
+    * title        string  Nombre del curso (ya saneado con format_string).
+    * summary      string  HTML del resumen (ya saneado con format_text).
+    * imageurl     string  URL de portada; ausente/null si no hay.
+    * categoryname string  Nombre de categoría (opcional).
+    * courselang   string  Código de idioma (opcional).
+    * continueurl  string  URL "continuar"; ausente/null si no hay recurso navegable.
+
+    Ejemplo de contexto:
+    {
+        "title": "Conceptos Generales del Sector Inmobiliario",
+        "summary": "<p>Curso introductorio.</p>",
+        "imageurl": "https://example.com/pluginfile.php/19/course/overviewfiles/portada.jpg",
+        "categoryname": "Formación",
+        "courselang": "es",
+        "continueurl": "https://example.com/mod/page/view.php?id=3"
+    }
+}}
+<div class="cpi-course-banner" data-region="cpi-course-banner">
+    {{#imageurl}}
+        <div class="cpi-course-banner__media">
+            <img src="{{imageurl}}" alt="" loading="lazy">
+        </div>
+    {{/imageurl}}
+
+    <div class="cpi-course-banner__body">
+        {{#categoryname}}<span class="badge cpi-badge cpi-badge--category">{{categoryname}}</span>{{/categoryname}}
+        {{#courselang}}<span class="badge cpi-badge cpi-badge--lang">{{courselang}}</span>{{/courselang}}
+
+        {{! El título del curso ya lo pinta el header nativo (full_header); no se duplica aquí. }}
+        {{#summary}}
+        {{! "Ver más" sin JS: checkbox hack. Sin SCSS, el resumen se ve completo (legible). }}
+        <div class="cpi-course-banner__summary">
+            <input type="checkbox" id="cpi-summary-toggle" class="cpi-summary-toggle" hidden>
+            <div class="cpi-summary-text">{{{summary}}}</div>
+            <label for="cpi-summary-toggle" class="cpi-summary-more" aria-hidden="true"></label>
+        </div>
+        {{/summary}}
+
+        {{#continueurl}}
+        <a href="{{continueurl}}" class="btn btn-primary cpi-course-banner__continue">
+            {{#str}} continue, theme_cpi {{/str}}
+        </a>
+        {{/continueurl}}
+    </div>
+</div>

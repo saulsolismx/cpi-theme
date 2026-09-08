@@ -354,3 +354,158 @@ body.pagelayout-course section.block_navigation[data-block="navigation"] {
 .courseindex-link {
   color: #111827;
 }
+
+// ─── CAPA 2 (Fase 2b) — Estilos del banner de curso ───
+// El banner se inyecta vía hook en standard_top_of_body (fuera de .main-inner),
+// por eso se acota el ancho y se centra aquí.
+.cpi-course-banner {
+  display: flex;
+  flex-shrink: 0;                     // el padre #page-wrapper es flex column de altura
+                                       // fija; sin esto lo colapsa a height:0
+  width: calc(100% - 2rem);          // gutter >=1rem a cada lado en cualquier ancho
+  max-width: 1140px;
+  margin: 1.5rem auto 32px;           // centrado + separación del contenido
+  // El banner se inyecta como hermano ANTES de #page (que lleva margin-top:60px
+  // para despejar el navbar fijo). Sin este override el borde superior del banner
+  // queda tapado por el navbar. --navbar-height la expone Boost en :root (=60px).
+  margin-top: calc(var(--navbar-height, 60px) + 1.5rem);
+  background: #ffffff;
+  border: 0;
+  border-radius: 5px;
+  overflow: hidden;                    // recorta la imagen al radio de la tarjeta
+  box-shadow: rgba(187, 188, 191, 0.16) 0 0 4px 0,
+              rgba(226, 227, 228, 0.5) 0 0 12px 0;
+
+  &__media {
+    flex: 0 0 40%;
+    max-width: 410px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;    // badges/título/resumen arriba, botón abajo
+    padding: 24px;
+    min-height: 220px;                 // altura del banner ~220px
+  }
+
+  &__title {
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #002256;                    // navy — mejor contraste que el gris original
+    margin: 0 0 12px;
+  }
+
+  &__continue {
+    display: block;
+    width: 100%;
+    background: #002256;
+    color: #fff;
+    border: 1px solid #002256;
+    border-radius: 5px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 6px 12px;
+    box-shadow: none;
+    text-align: center;
+
+    &:hover,
+    &:focus {
+      background: #001a44;             // feedback: un poco más oscuro
+      border-color: #001a44;
+      color: #fff;
+    }
+  }
+}
+
+// Badges (categoría / idioma)
+.cpi-badge {
+  display: inline-block;
+  align-self: flex-start;              // hijo directo del __body (flex column): evita
+                                       // que se estire a todo el ancho; queda como chip
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-size: 12px;
+  color: #4b5563;
+  margin-right: 8px;
+}
+
+// Resumen con "ver más" (checkbox hack, sin JS)
+.cpi-course-banner__summary {
+  margin-top: 4px;
+
+  .cpi-summary-text {
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: hidden;
+    max-height: calc(1.5em * 3);       // fallback si no hay line-clamp: ~3 líneas
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .cpi-summary-toggle:checked ~ .cpi-summary-text {
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    max-height: none;
+  }
+
+  .cpi-summary-more {
+    display: inline-block;
+    cursor: pointer;
+    color: #002256;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 4px;
+
+    &::after {
+      content: "Ver más";
+    }
+  }
+
+  .cpi-summary-toggle:checked ~ .cpi-summary-more::after {
+    content: "Ver menos";
+  }
+}
+
+// Responsive: en pantallas angostas el banner pasa a columna (imagen arriba).
+@include media-breakpoint-down(lg) {
+  .cpi-course-banner {
+    flex-direction: column;
+
+    &__media {
+      flex: 0 0 auto;
+      max-width: none;
+      width: 100%;
+      height: 180px;
+    }
+
+    &__body {
+      min-height: 0;
+    }
+  }
+}
+
+// ─── Micro-arreglo post-Capa 2 — Contraste del bloque My Progress ───
+// El texto (labels "My progress"/"Class average", porcentajes y nombres de
+// grupo/cohorte en <small>) salía en gris flojo. Se sube el contraste,
+// acotado al bloque para no afectar otros.
+.block_myprogress {
+  p,
+  small {
+    color: #111827;
+  }
+}
