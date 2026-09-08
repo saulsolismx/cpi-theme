@@ -509,3 +509,61 @@ body.pagelayout-course section.block_navigation[data-block="navigation"] {
     color: #111827;
   }
 }
+
+// ─── CAPA 3 — Rediseño del course index (temario lateral) estilo CPI ───
+// Course index es core (nav#courseindex dentro de #theme_boost-drawers-courseindex).
+// Solo estilos. NO se toca el estado activo (.pageitem, ya navy) ni los
+// indicadores de completado (verde #357a32 / rojo #ca3120 se quedan).
+
+// Panel del drawer en blanco
+#theme_boost-drawers-courseindex {
+  background: #ffffff;
+}
+
+.courseindex {
+  padding: 0.5rem;   // gutter interno; solo horizontal/vertical, no genera scroll-x
+
+  // Secciones como cards
+  .courseindex-section {
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;   // separación vertical entre cards (sin margin lateral)
+    overflow: hidden;         // recorta al radio (p.ej. fondo navy del pageitem)
+
+    &:last-child { margin-bottom: 0; }
+  }
+
+  // Título de sección: navy 700 (especificidad 0,4,0 → gana al link genérico)
+  .courseindex-item.courseindex-section-title .courseindex-link {
+    color: #002256;
+    font-weight: 700;
+  }
+
+  // Enlace de actividad: contraste reparado. Especificidad 0,3,0 para VENCER a
+  // Boost (.courseindex .courseindex-item .courseindex-link → --bs-secondary-color).
+  .courseindex-item .courseindex-link {
+    color: #374151;
+  }
+
+  // Padding vertical en los items para respirar
+  .courseindex-item {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+  }
+
+  // Hover en navy (0,4,0; empata Boost #000 y gana por orden posterior).
+  // No afecta a .pageitem:hover (Boost lo cubre con 0,5,0).
+  .courseindex-item:hover .courseindex-link,
+  .courseindex-item:focus .courseindex-link {
+    color: #002256;
+  }
+}
+
+// Fix Capa 3 — título de sección ACTIVA (.pageitem) en blanco sobre su fondo navy.
+// Nuestra regla navy de sección (0,4,0) le ganaba a la de Boost que pone el texto
+// del pageitem en blanco (.courseindex-item.pageitem a, 0,3,1) → navy sobre navy =
+// invisible. Esta regla (0,5,0) restaura el blanco cuando el título es la página actual.
+.courseindex .courseindex-item.pageitem.courseindex-section-title .courseindex-link {
+  color: #ffffff;
+}
