@@ -344,3 +344,13 @@ body.pagelayout-mydashboard .block_xp {
 body.path-mod #region-main #maincontent + h2 {
   display: none;
 }
+
+// ─── CAPA 1 — Vista de curso: limpieza de andamiaje + contraste ───
+// Ocultar bloque "Navegación" de Boost (árbol del sitio) en vista de curso.
+body.pagelayout-course section.block_navigation[data-block="navigation"] {
+  display: none;
+}
+// Contraste del course index: quitar el alpha 0.75 que deslava los enlaces.
+.courseindex-link {
+  color: #111827;
+}
