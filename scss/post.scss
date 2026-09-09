@@ -575,3 +575,60 @@ body.pagelayout-login #page .login-layout-left {
     background-position: left center;
 }
 body.pagelayout-login #page .login-layout-left::after { content: none; }
+
+
+// Navegación de actividad (Anterior / Siguiente) al pie del recurso — estilo CPI.
+// La nav se reactiva vía theme_cpi\output\core_renderer (quita el gate usescourseindex).
+// El fondo navy va en CADA botón (pastilla), NO en el contenedor. Se fuerza una fila
+// flex: Atrás a la izquierda, Siguiente a la derecha, separados y sin apilarse.
+body.pagelayout-incourse .activity-navigation {
+    background: transparent; // el contenedor NUNCA lleva navy
+
+    // Fila flex: prev izquierda, next derecha, hueco transparente en medio.
+    .row {
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    // Ocultar la columna central (dropdown "Ir a la actividad…") por completo.
+    .row > .col-md-4:nth-child(2) { display: none; }
+
+    // Columnas prev/next: ancho del contenido (hasta la mitad), sin float.
+    .row > .col-md-4 {
+        flex: 0 1 auto;
+        width: auto;
+        max-width: none;
+    }
+    .float-start,
+    .float-end { float: none; }
+
+    // Cada botón = pastilla navy independiente.
+    .float-start .btn,
+    .float-end .btn {
+        display: inline-block;
+        max-width: 100%;
+        background-color: $cpi-navy;
+        color: #fff;
+        border: 0;
+        border-radius: 50rem;
+        padding: 0.65rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.05rem;
+        text-decoration: none;
+        box-shadow: 0 2px 8px rgba(0, 34, 86, 0.15);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &:hover,
+        &:focus {
+            background-color: $cpi-navy-dark;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 34, 86, 0.25);
+        }
+    }
+}
