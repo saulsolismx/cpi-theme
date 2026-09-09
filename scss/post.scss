@@ -567,3 +567,11 @@ body.pagelayout-course section.block_navigation[data-block="navigation"] {
 .courseindex .courseindex-item.pageitem.courseindex-section-title .courseindex-link {
   color: #ffffff;
 }
+
+// Login: reemplazar imagen default de Boost por la de CPI + quitar watermark
+body.pagelayout-login #page .login-layout-left {
+    background-image: url([[pix:theme|login_bg]]);
+    background-size: cover;
+    background-position: left center;
+}
+body.pagelayout-login #page .login-layout-left::after { content: none; }
