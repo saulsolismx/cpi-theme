@@ -632,3 +632,76 @@ body.pagelayout-incourse .activity-navigation {
         }
     }
 }
+
+// Dashboard del alumno: 3 columnas (25/50/25) — layout theme_cpi/dashboard.
+.pagelayout-mydashboard {
+    .cpi-dashboard-row {
+        margin-top: 0.5rem;
+        row-gap: 1.5rem; // separación vertical cuando apilan en móvil
+    }
+
+    // Columnas laterales: que no colapsen si están vacías (mientras no haya bloques).
+    .cpi-dash-left,
+    .cpi-dash-right {
+        min-height: 1px;
+
+        .block {
+            margin-bottom: 1rem;
+        }
+    }
+
+    // Botón "Agregar bloque" solo visible en modo edición; separación cuando aparece.
+    .cpi-dash-left [data-key],
+    .cpi-dash-right [data-key] {
+        margin-bottom: 1rem;
+    }
+}
+
+// En pantallas grandes, un pequeño respiro entre las 3 columnas.
+@include media-breakpoint-up(lg) {
+    .pagelayout-mydashboard .cpi-dashboard-row {
+        --bs-gutter-x: 1.5rem;
+    }
+}
+
+// ============================================================================
+// Pulido del dashboard de 3 columnas (theme_cpi/dashboard).
+// ============================================================================
+
+// (A) Tarjetas de "Mis cursos" (block_myoverview) grandes: 1-2 por fila, no 3 apretadas.
+// El grid real es core_course/coursecards -> .card-grid (row-cols-lg-3) con hijos .col.
+// Acotado al dashboard para NO afectar las tarjetas en otras páginas.
+.pagelayout-mydashboard .block_myoverview .card-grid > .col {
+    flex: 0 0 auto;
+    width: 100%; // 1 por fila (móvil o columnas apiladas)
+}
+@include media-breakpoint-up(lg) {
+    // En desktop, 2 por fila dentro de la columna central (col-lg-6).
+    .pagelayout-mydashboard .block_myoverview .card-grid > .col {
+        width: 50%;
+    }
+}
+
+// (B) Ocultar el bloque global "Navegación" SOLO en el dashboard (se cuela desde side-pre).
+// No borra el bloque: sigue disponible en cursos y demás páginas.
+.pagelayout-mydashboard .block_navigation {
+    display: none;
+}
+
+// Dashboard a ancho completo (como welearning): quitar el max-width 830px de Boost
+// Boost usa body.limitedwidth #page.drawers .main-inner (1,3,1); añadimos body + .limitedwidth
+// para ganar por especificidad (1,4,1) sin !important. Acotado al dashboard.
+body.pagelayout-mydashboard.limitedwidth #page.drawers .main-inner {
+    max-width: 100%;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+// Dashboard: reducir el margen lateral a ~24px (antes ~72px: 3rem de #page.drawers +
+// 1.5rem de .main-inner). Se anula el padding de #page.drawers SOLO en el dashboard;
+// el único margen lateral queda el 1.5rem (24px) del .main-inner. Simétrico.
+// Especificidad body+.pagelayout-mydashboard+#page+.drawers (1,2,1) > boost #page.drawers (1,1,0).
+body.pagelayout-mydashboard #page.drawers {
+    padding-left: 0;
+    padding-right: 0;
+}

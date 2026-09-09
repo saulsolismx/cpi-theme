@@ -12,3 +12,12 @@ $THEME->extrascsscallback = 'theme_cpi_get_extra_scss';
 $THEME->iconsystem = \core\output\icon_system::FONTAWESOME;
 $THEME->haspagelayouts = false;
 $THEME->usescourseindex = true;
+
+// Dashboard del alumno: layout propio de 3 columnas (25/50/25, sin drawer de bloques).
+// Override SOLO de 'mydashboard'; los demás layouts se heredan de boost (cascada).
+$THEME->layouts['mydashboard'] = [
+    'file' => 'dashboard.php',
+    'regions' => ['content-left', 'content-right'],
+    'defaultregion' => 'content-left',
+    'options' => ['nonavbar' => false, 'langmenu' => true],
+];
