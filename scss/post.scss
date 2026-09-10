@@ -718,3 +718,18 @@ body.pagelayout-mydashboard #page.drawers {
     padding-left: 0;
     padding-right: 0;
 }
+
+// ============================================================================
+// Perfil: ocultar el bloque "App para dispositivos móviles" (QR + descarga).
+// No hay hook por nombre en el DOM (la categoría 'mobile' se pinta como
+// .node_category sin id/clase propia), así que se apunta por sus nodos únicos:
+//   - #qrcode        -> nodo del QR (mobileappqr)
+//   - link a /admin/tool/mobile/ -> nodo "conectado" (logout, mobileappnode)
+//   - link a download.moodle.org/mobile -> nodo "descarga la app"
+// Acotado al perfil (body id = page-<pagetype>, pagetype 'user-profile').
+// NO toca enablemobilewebservice ni tokens: la app sigue funcionando.
+#page-user-profile .node_category:has(#qrcode),
+#page-user-profile .node_category:has(a[href*="/admin/tool/mobile/"]),
+#page-user-profile .node_category:has(a[href*="download.moodle.org/mobile"]) {
+    display: none;
+}
