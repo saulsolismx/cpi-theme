@@ -657,10 +657,23 @@ body.pagelayout-incourse .activity-navigation {
     }
 }
 
-// En pantallas grandes, un pequeño respiro entre las 3 columnas.
+// En pantallas grandes: proporciones 20/60/20 (central más ancha, laterales más
+// angostas) + gutter reducido, para reducir el espacio muerto entre columnas.
 @include media-breakpoint-up(lg) {
     .pagelayout-mydashboard .cpi-dashboard-row {
-        --bs-gutter-x: 1.5rem;
+        --bs-gutter-x: 0.75rem;
+    }
+    .pagelayout-mydashboard .cpi-dash-left {
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+    .pagelayout-mydashboard .cpi-dash-center {
+        flex: 0 0 60%;
+        max-width: 60%;
+    }
+    .pagelayout-mydashboard .cpi-dash-right {
+        flex: 0 0 20%;
+        max-width: 20%;
     }
 }
 
@@ -693,8 +706,8 @@ body.pagelayout-incourse .activity-navigation {
 // para ganar por especificidad (1,4,1) sin !important. Acotado al dashboard.
 body.pagelayout-mydashboard.limitedwidth #page.drawers .main-inner {
     max-width: 100%;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
 }
 
 // Dashboard: reducir el margen lateral a ~24px (antes ~72px: 3rem de #page.drawers +
