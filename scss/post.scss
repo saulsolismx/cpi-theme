@@ -265,6 +265,21 @@ body.pagelayout-mydashboard .block_myoverview {
       transform: translateY(-2px);
     }
 
+    // Imagen del curso: en Moodle 5.2 NO es un <img>, es un <div.card-img-top>
+    // con background-image inline (verificado en coursecard.mustache y en el DOM
+    // vivo). Por eso object-fit NO aplica; se controla con background-size.
+    // Boost la deja en `cover` (recorta) + `repeat`. Aquí: `contain` para verla
+    // COMPLETA sin recorte, sin repetir, centrada, con fondo neutro (token gris)
+    // para las bandas sobrantes, y altura FIJA para que la rejilla quede pareja
+    // entre tarjetas aunque las imágenes tengan proporciones distintas.
+    .card-img-top {
+      height: 150px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: $cpi-grey-100;
+    }
+
     .course-info-container {
       padding: 0.85rem 1rem;
     }
@@ -681,19 +696,16 @@ body.pagelayout-incourse .activity-navigation {
 // Pulido del dashboard de 3 columnas (theme_cpi/dashboard).
 // ============================================================================
 
-// (A) Tarjetas de "Mis cursos" (block_myoverview) grandes: 1-2 por fila, no 3 apretadas.
-// El grid real es core_course/coursecards -> .card-grid (row-cols-lg-3) con hijos .col.
-// Acotado al dashboard para NO afectar las tarjetas en otras páginas.
-.pagelayout-mydashboard .block_myoverview .card-grid > .col {
-    flex: 0 0 auto;
-    width: 100%; // 1 por fila (móvil o columnas apiladas)
-}
-@include media-breakpoint-up(lg) {
-    // En desktop, 2 por fila dentro de la columna central (col-lg-6).
-    .pagelayout-mydashboard .block_myoverview .card-grid > .col {
-        width: 50%;
-    }
-}
+// (A) Grid de "Vista general de cursos" (block_myoverview): 3 col en escritorio,
+// 2 en tablet, 1 en móvil (referencia welearning). El grid real
+// (core_course/coursecards) YA trae las clases Bootstrap
+// `row-cols-1 row-cols-sm-2 row-cols-lg-3`, que producen exactamente ese 1/2/3,
+// así que dejamos actuar la rejilla NATIVA y no imponemos anchos propios.
+//
+// Nota: antes se forzaba `width:50%` (2 por fila) por temor a que 3 quedaran
+// apretadas dentro de la columna central. Medido en el DOM vivo con el dashboard
+// a ancho completo, la columna central (col-lg-6) mide ~1145px @1920 → cada
+// tarjeta a 3 columnas ≈ 370px (holgado). Por eso se retira aquel tope.
 
 // (B) Ocultar el bloque global "Navegación" SOLO en el dashboard (se cuela desde side-pre).
 // No borra el bloque: sigue disponible en cursos y demás páginas.
