@@ -270,10 +270,21 @@ body.pagelayout-mydashboard .block_myoverview {
     // vivo). Por eso object-fit NO aplica; se controla con background-size.
     // Boost la deja en `cover` (recorta) + `repeat`. Aquí: `contain` para verla
     // COMPLETA sin recorte, sin repetir, centrada, con fondo neutro (token gris)
-    // para las bandas sobrantes, y altura FIJA para que la rejilla quede pareja
-    // entre tarjetas aunque las imágenes tengan proporciones distintas.
+    // para las bandas sobrantes.
+    //
+    // La caja usa aspect-ratio 2/1 (en vez de altura fija) porque las portadas
+    // del sitio son 500x250 = 2:1: así la caja escala con el ancho de la tarjeta
+    // y esas imágenes llenan de borde a borde SIN banda lateral en todos los
+    // breakpoints (y quedan parejas dentro de cada uno, al ser todas del mismo
+    // ancho). max-height topa el crecimiento en tarjetas muy anchas.
+    //
+    // height:auto es imprescindible: Boost fija `.course-card .card-img-top {
+    // height:7rem }` (112px), y una altura definida gana sobre aspect-ratio.
+    // Al ponerla en auto (con más especificidad) dejamos que mande el 2/1.
     .card-img-top {
-      height: 150px;
+      aspect-ratio: 2 / 1;
+      height: auto;
+      max-height: 220px;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
