@@ -29,6 +29,22 @@ namespace theme_cpi\output;
 class core_renderer extends \theme_boost\output\core_renderer {
 
     /**
+     * Banner de cabecera de curso (Capa 2) DENTRO del contenedor del contenido.
+     *
+     * Se antepone al header nativo (para mantener el banner arriba, como el diseño
+     * previo) y, al formar parte de la salida de full_header(), queda dentro de
+     * #page-header (→ #topofscroll): el mismo contenedor que el contenido del curso.
+     * Así banner y contenido alinean con el índice de curso abierto o cerrado, sin
+     * acoplarse a la geometría de los drawers. El gate (solo vista de curso, id > 1)
+     * vive en \theme_cpi\local\course_banner::html().
+     *
+     * @return string
+     */
+    public function full_header() {
+        return \theme_cpi\local\course_banner::html($this, $this->page) . parent::full_header();
+    }
+
+    /**
      * Copia de \core\output\core_renderer::activity_navigation() SIN el early-return del
      * gate de course index, y con el texto de los enlaces prev/next fijado a un literal
      * compacto (Anterior/Siguiente) en lugar del nombre de la actividad.

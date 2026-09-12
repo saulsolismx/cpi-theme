@@ -382,19 +382,14 @@ body.pagelayout-course section.block_navigation[data-block="navigation"] {
 }
 
 // ─── CAPA 2 (Fase 2b) — Estilos del banner de curso ───
-// El banner se inyecta vía hook en standard_top_of_body (fuera de .main-inner),
-// por eso se acota el ancho y se centra aquí.
+// El banner se renderiza desde core_renderer::full_header(), dentro de #page-header
+// (→ #topofscroll), el MISMO contenedor que el contenido del curso. Por eso ya no se
+// acota el ancho ni se centra sobre el viewport ni se compensa el navbar: hereda el
+// ancho y la alineación del contenedor. Solo se conserva el diseño interno.
 .cpi-course-banner {
   display: flex;
-  flex-shrink: 0;                     // el padre #page-wrapper es flex column de altura
-                                       // fija; sin esto lo colapsa a height:0
-  width: calc(100% - 2rem);          // gutter >=1rem a cada lado en cualquier ancho
-  max-width: 1140px;
-  margin: 1.5rem auto 32px;           // centrado + separación del contenido
-  // El banner se inyecta como hermano ANTES de #page (que lleva margin-top:60px
-  // para despejar el navbar fijo). Sin este override el borde superior del banner
-  // queda tapado por el navbar. --navbar-height la expone Boost en :root (=60px).
-  margin-top: calc(var(--navbar-height, 60px) + 1.5rem);
+  width: 100%;
+  margin: 0 0 32px;                   // solo separación del contenido de abajo
   background: #ffffff;
   border: 0;
   border-radius: 5px;
