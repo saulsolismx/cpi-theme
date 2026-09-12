@@ -1,31 +1,55 @@
 <?php
-namespace theme_cpi\local\hooks\output;
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+namespace theme_cpi\local;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Capa 2 — Banner de cabecera de curso.
+ * Banner de cabecera de curso (Capa 2): portada + resumen + botón "Continuar".
  *
- * Inyecta un banner (portada + título + resumen + botón "Continuar") en la parte
- * superior del body, SOLO en la vista de curso. Punto de inyección robusto: hook de
- * output, sin overridear ninguna plantilla de core.
+ * Antes se inyectaba vía hook before_standard_top_of_body_html_generation, que emite
+ * HTML al inicio del <body> (fuera de #page), por lo que el banner quedaba en otro
+ * contenedor y no alineaba con el contenido. Ahora se renderiza desde
+ * core_renderer::full_header(), de modo que queda DENTRO de #page-header (→ #topofscroll),
+ * el mismo contenedor que el contenido del curso, y ambos alinean con el índice abierto
+ * o cerrado. Esta clase concentra el armado de datos para no duplicarlo.
+ *
+ * @package theme_cpi
  */
-class before_standard_top_of_body_html_generation {
+class course_banner {
 
     /**
-     * @param \core\hook\output\before_standard_top_of_body_html_generation $hook
+     * HTML del banner para la página actual, o '' si no aplica.
+     *
+     * Gate: solo vista de curso (pagelayout 'course') y curso real (id > 1).
+     *
+     * @param \renderer_base $output renderer capaz de render_from_template()
+     * @param \moodle_page $page
+     * @return string
      */
-    public static function callback(
-        \core\hook\output\before_standard_top_of_body_html_generation $hook
-    ): void {
-        global $DB, $OUTPUT, $PAGE;
+    public static function html(\renderer_base $output, \moodle_page $page): string {
+        global $DB;
 
         // ── GATE: solo vista de curso, con curso real (no el site, id 1). ──
-        if ($PAGE->pagelayout !== 'course' || $PAGE->course->id <= 1) {
-            return;
+        if ($page->pagelayout !== 'course' || $page->course->id <= 1) {
+            return '';
         }
 
-        $course    = $PAGE->course;
+        $course    = $page->course;
         $courseid  = (int) $course->id;
         $coursectx = \context_course::instance($courseid);
 
@@ -59,7 +83,7 @@ class before_standard_top_of_body_html_generation {
             'continueurl'  => $continueurl ? $continueurl->out(false) : null,
         ];
 
-        $hook->add_html($OUTPUT->render_from_template('theme_cpi/course_banner', $data));
+        return $output->render_from_template('theme_cpi/course_banner', $data);
     }
 
     /**
