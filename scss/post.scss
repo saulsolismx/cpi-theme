@@ -728,6 +728,28 @@ body.pagelayout-mydashboard.limitedwidth #page.drawers .main-inner {
     padding-right: 0.25rem;
 }
 
+// Curso y actividad a ancho amplio: se sube el max-width de Boost (830px de
+// limitedwidth) para aprovechar el espacio. Mismo patrón que el dashboard:
+// body + .limitedwidth + pagelayout (especificidad 1,4,1) vence la regla de Boost
+// body.limitedwidth #page.drawers .main-inner (1,3,1) sin !important. Acotado a
+// pagelayout-course (/course/view.php) y pagelayout-incourse (/mod/*/view.php).
+// Tope 1500px (no 100%) para que en monitores muy anchos la línea de texto no
+// quede demasiado larga e ilegible; queda centrado por los márgenes auto de Boost.
+body.pagelayout-course.limitedwidth #page.drawers .main-inner,
+body.pagelayout-incourse.limitedwidth #page.drawers .main-inner {
+    max-width: 1500px;
+}
+
+// El título del curso/actividad vive en #page-header, que tiene su PROPIO tope de
+// Boost (.header-maxwidth: 830px, especificidad 0,1,0) independiente del de
+// .main-inner. Sin subir también éste, el título quedaría a 830px centrado y
+// desalineado respecto al banner y a las secciones (ya anchos). Se sube al mismo
+// 1500px, acotado a curso/actividad. body+pagelayout+#page-header (1,2,1) vence.
+body.pagelayout-course #page-header.header-maxwidth,
+body.pagelayout-incourse #page-header.header-maxwidth {
+    max-width: 1500px;
+}
+
 // Dashboard: reducir el margen lateral a ~24px (antes ~72px: 3rem de #page.drawers +
 // 1.5rem de .main-inner). Se anula el padding de #page.drawers SOLO en el dashboard;
 // el único margen lateral queda el 1.5rem (24px) del .main-inner. Simétrico.
