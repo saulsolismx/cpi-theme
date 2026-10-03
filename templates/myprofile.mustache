@@ -1,0 +1,209 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_cpi/myprofile
+
+    Página de perfil estilo welearning (perfil-welearning.md §10).
+
+    Dos columnas en escritorio: izquierda "Acerca de mi" + "Accesos";
+    derecha "Habilidades e intereses" + "Cursos" + "Más". Una columna bajo 992px.
+
+    Context variables required for this template:
+    * fullname, email, showemail, avatar, description, hasdescription
+    * canedit, editurl
+    * escuela/personal: [{icon, label, value, empty}]
+    * redes: [{icon, title, haslink, url}]
+    * accesos: [{icon, label, value}]
+    * intereses: [{name, url}], interesesempty
+    * courses: [{name, url, category, teachers, hasteachers}]
+    * more
+
+    Example context (json):
+    {
+        "fullname": "Alumno Prueba",
+        "email": "alumno@example.com",
+        "showemail": true,
+        "avatar": "<img src='#' alt=''>",
+        "hasdescription": false,
+        "canedit": true,
+        "editurl": "/user/edit.php?id=3",
+        "hasescuela": true,
+        "escuela": [{"icon": "fa-school", "label": "Nivel", "value": "Licenciatura", "empty": false}],
+        "haspersonal": false,
+        "hasredes": true,
+        "redes": [{"icon": "fa-facebook-square", "title": "Facebook", "haslink": false, "url": ""}],
+        "accesos": [{"icon": "fa-calendar", "label": "Activo desde", "value": "3-Oct-2026 05:02 pm"}],
+        "hasintereses": false,
+        "interesesempty": "Da clic en el botón de ⊕ para agregar habilidades e intereses a tu perfil.",
+        "hascourses": false,
+        "more": ""
+    }
+}}
+<div class="cpi-profile">
+    <div class="cpi-profile-grid">
+
+        {{! ---------- Columna izquierda ---------- }}
+        <div class="cpi-profile-col cpi-profile-col-left">
+
+            <section class="cpi-card">
+                <div class="cpi-card-head">
+                    <h3 class="cpi-card-title">Acerca de mi</h3>
+                    {{#canedit}}
+                        <a class="cpi-card-gear" href="{{editurl}}" title="{{#str}}editmyprofile{{/str}}">
+                            <i class="fas fa-cog" aria-hidden="true"></i>
+                            <span class="visually-hidden">{{#str}}editmyprofile{{/str}}</span>
+                        </a>
+                    {{/canedit}}
+                </div>
+
+                <div class="cpi-profile-identity">
+                    <div class="cpi-profile-avatar">{{{avatar}}}</div>
+                    <p class="cpi-profile-name">{{fullname}}</p>
+                    {{#showemail}}<p class="cpi-profile-email">{{email}}</p>{{/showemail}}
+                    {{#hasdescription}}<div class="cpi-profile-desc">{{{description}}}</div>{{/hasdescription}}
+                </div>
+
+                {{#hasescuela}}
+                    <h4 class="cpi-section-title">Escuela</h4>
+                    <ul class="cpi-rows">
+                        {{#escuela}}
+                            <li class="cpi-row">
+                                <div class="cpi-row-label">
+                                    <i class="fas {{icon}} cpi-row-icon" aria-hidden="true"></i>
+                                    <span>{{label}}</span>
+                                </div>
+                                <p class="cpi-row-value {{#empty}}cpi-empty{{/empty}}">{{{value}}}</p>
+                            </li>
+                        {{/escuela}}
+                    </ul>
+                {{/hasescuela}}
+
+                {{#haspersonal}}
+                    <h4 class="cpi-section-title">Personal</h4>
+                    <ul class="cpi-rows">
+                        {{#personal}}
+                            <li class="cpi-row">
+                                <div class="cpi-row-label">
+                                    <i class="fas {{icon}} cpi-row-icon" aria-hidden="true"></i>
+                                    <span>{{label}}</span>
+                                </div>
+                                <p class="cpi-row-value {{#empty}}cpi-empty{{/empty}}">{{{value}}}</p>
+                            </li>
+                        {{/personal}}
+                    </ul>
+                {{/haspersonal}}
+
+                {{#hasredes}}
+                    <h4 class="cpi-section-title">Redes Sociales</h4>
+                    <p class="cpi-socials">
+                        {{#redes}}
+                            {{#haslink}}
+                                <a href="{{url}}" target="_blank" rel="noopener" class="cpi-social cpi-social-on" title="{{title}}">
+                                    <i class="fab {{icon}}" aria-hidden="true"></i>
+                                    <span class="visually-hidden">{{title}}</span>
+                                </a>
+                            {{/haslink}}
+                            {{^haslink}}
+                                <i class="fab {{icon}} cpi-social cpi-social-off" aria-hidden="true" title="{{title}}"></i>
+                            {{/haslink}}
+                        {{/redes}}
+                    </p>
+                {{/hasredes}}
+            </section>
+
+            <section class="cpi-card">
+                <div class="cpi-card-head">
+                    <h3 class="cpi-card-title">Accesos</h3>
+                </div>
+                <ul class="cpi-rows">
+                    {{#accesos}}
+                        <li class="cpi-row">
+                            <div class="cpi-row-label">
+                                <i class="fas {{icon}} cpi-row-icon" aria-hidden="true"></i>
+                                <span>{{label}}</span>
+                            </div>
+                            <p class="cpi-row-value">{{value}}</p>
+                        </li>
+                    {{/accesos}}
+                </ul>
+            </section>
+        </div>
+
+        {{! ---------- Columna derecha ---------- }}
+        <div class="cpi-profile-col cpi-profile-col-right">
+
+            <section class="cpi-card">
+                <div class="cpi-card-head">
+                    <h3 class="cpi-card-title">Habilidades e intereses</h3>
+                    {{#canedit}}
+                        <a class="cpi-card-gear" href="{{editurl}}#id_moodle_interests" title="{{#str}}interests{{/str}}">
+                            <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                            <span class="visually-hidden">{{#str}}interests{{/str}}</span>
+                        </a>
+                    {{/canedit}}
+                </div>
+                {{#hasintereses}}
+                    <p class="cpi-tags">
+                        {{#intereses}}<a class="cpi-tag" href="{{url}}">{{name}}</a>{{/intereses}}
+                    </p>
+                {{/hasintereses}}
+                {{^hasintereses}}
+                    <p class="cpi-help-text">{{interesesempty}}</p>
+                {{/hasintereses}}
+            </section>
+
+            {{#hascourses}}
+                <section class="cpi-card">
+                    <div class="cpi-card-head">
+                        <h3 class="cpi-card-title">Cursos</h3>
+                    </div>
+                    <div class="cpi-table-wrap">
+                        <table class="cpi-courses">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre del curso</th>
+                                    <th scope="col">Categoría</th>
+                                    <th scope="col">Profesor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#courses}}
+                                    <tr>
+                                        <td><a href="{{url}}">{{name}}</a></td>
+                                        <td>{{category}}</td>
+                                        {{#hasteachers}}<td>{{teachers}}</td>{{/hasteachers}}
+                                        {{^hasteachers}}<td class="cpi-empty">Sin profesores</td>{{/hasteachers}}
+                                    </tr>
+                                {{/courses}}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            {{/hascourses}}
+
+            {{! Perfil estándar completo (informes, sesiones, insignias…): se conserva
+                colapsado para no perder nada de lo que trae Moodle. Solo se pinta para
+                el propio usuario y para quien tiene user:viewalldetails. }}
+            {{#hasmore}}
+                <details class="cpi-card cpi-profile-more">
+                    <summary class="cpi-card-title">Más</summary>
+                    <div class="cpi-profile-more-body">{{{more}}}</div>
+                </details>
+            {{/hasmore}}
+        </div>
+    </div>
+</div>

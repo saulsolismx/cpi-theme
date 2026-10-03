@@ -773,3 +773,342 @@ body.pagelayout-mydashboard #page.drawers {
 #page-user-profile .node_category:has(a[href*="download.moodle.org/mobile"]) {
     display: none;
 }
+
+// ============================================================================
+// Página de perfil estilo welearning
+// ----------------------------------------------------------------------------
+// Réplica de perfil-welearning.md: §4 (colores, tipografía y medidas), §10
+// (identidad CPI: navy del tema en vez de #002256, Poppins en vez de Montserrat;
+// los grises se copian tal cual). El layout es el de §10: dos columnas en
+// escritorio, una sola bajo 992px, sin banda de portada.
+// Marcado: templates/myprofile.mustache + classes/output/core_user/myprofile/renderer.php
+// ============================================================================
+
+// Grises de welearning, copiados literalmente (§4).
+$wl-title:   #666666;   // nombre del usuario y títulos de tarjeta
+$wl-subtle:  #646569;   // email y títulos de sección
+$wl-text:    #6a6c6f;   // etiquetas y valores
+$wl-empty:   #b4b5b8;   // valores vacíos y texto de ayuda
+$wl-social:  #9b9ea3;   // iconos de redes sin valor
+
+.cpi-profile {
+
+    // ---- Rejilla de dos columnas (§10). Izquierda ~28%, derecha el resto.
+    .cpi-profile-grid {
+        display: grid;
+        grid-template-columns: 28% 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    // Móvil y tablet: una sola columna, en el orden del marcado
+    // (Acerca de mi, Accesos, Habilidades, Cursos).
+    @media (max-width: 991.98px) {
+        .cpi-profile-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+
+    .cpi-profile-col {
+        min-width: 0; // deja que el contenido encoja en lugar de desbordar la rejilla
+    }
+
+    // ---- Tarjetas (§4 ".cajas")
+    .cpi-card {
+        background: #fff;
+        border: none;
+        border-radius: 5px;
+        box-shadow: rgba(187, 188, 191, 0.16) 0 0 4px 0, rgba(226, 227, 228, 0.5) 0 0 12px 0;
+        padding: 16px 24px 24px;
+        margin-bottom: 2rem;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .cpi-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .cpi-card-title {
+        font-family: $headings-font-family; // Poppins (CPI) en lugar de Montserrat
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.3;
+        letter-spacing: -0.5px;
+        color: $wl-title;
+        margin: 0;
+    }
+
+    // Engrane / ⊕ del encabezado: navy del tema.
+    .cpi-card-gear {
+        color: $cpi-navy;
+        font-size: 16px;
+        line-height: 1;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            color: $cpi-navy-dark;
+        }
+    }
+
+    // ---- Identidad: avatar, nombre, email, descripción
+    .cpi-profile-identity {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .cpi-profile-avatar {
+        width: 132px;
+        height: 132px;
+        border-radius: 50%;
+        margin: 0 auto 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            width: 124px;
+            height: 124px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: rgba(187, 188, 191, 0.16) 0 0 4px 0, rgba(226, 227, 228, 0.5) 0 0 12px 0;
+        }
+    }
+
+    .cpi-profile-name {
+        font-family: $headings-font-family;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.3;
+        letter-spacing: -0.5px;
+        color: $wl-title;
+        margin: 0;
+    }
+
+    .cpi-profile-email {
+        font-family: $font-family-sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18.2px;
+        color: $wl-subtle;
+        margin: 0;
+        word-break: break-word;
+    }
+
+    .cpi-profile-desc {
+        font-size: 14px;
+        line-height: 18.2px;
+        color: $wl-text;
+        margin-top: 0.75rem;
+        text-align: left;
+    }
+
+    // ---- Títulos de sección (Escuela / Personal / Redes Sociales)
+    .cpi-section-title {
+        font-family: $font-family-sans-serif; // Roboto, como en welearning
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 20.8px;
+        color: $wl-subtle;
+        margin: 16px 0 8px;
+
+        &:first-of-type {
+            margin-top: 0;
+        }
+    }
+
+    // ---- Filas de datos (§4 "Layout de las filas de datos")
+    .cpi-rows {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .cpi-row {
+        display: flex;
+        margin-bottom: 0.5rem; // 8px -> 26.2px de fila a fila
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .cpi-row-label {
+        display: flex;
+        flex: 0 0 40%;
+        margin-right: 1rem;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 18.2px;
+        color: $wl-text;
+        min-width: 0;
+    }
+
+    .cpi-row-icon {
+        width: 20px;              // caja de 20px (§4)
+        margin-right: 8px;        // etiqueta a 28px del borde del icono
+        flex: 0 0 20px;
+        font-size: 16px;
+        color: $cpi-navy;         // .iconPcolor; el navy del tema coincide con #002256
+        text-align: left;
+        line-height: 18.2px;
+    }
+
+    .cpi-row-value {
+        flex-grow: 1;
+        margin: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18.2px;
+        color: $wl-text;
+        min-width: 0;
+        word-break: break-word;
+    }
+
+    // Vacíos en gris: "Sin tutor", "Sin especificar", "-" (§4).
+    .cpi-empty {
+        color: $wl-empty;
+    }
+
+    // ---- Redes sociales (§3, §6, §10)
+    .cpi-socials {
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .cpi-social {
+        font-size: 30px;
+        line-height: 1;
+        margin-right: 16px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    // Sin valor: gris, sin enlace.
+    .cpi-social-off {
+        color: $wl-social;
+    }
+
+    // Con valor: navy y enlazado.
+    a.cpi-social-on {
+        color: $cpi-navy;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            color: $cpi-navy-dark;
+        }
+    }
+
+    // ---- Habilidades e intereses
+    .cpi-tags {
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .cpi-tag {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50rem;
+        background: $cpi-grey-100;
+        color: $cpi-navy;
+        font-size: 13px;
+        line-height: 1.5;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            background: $cpi-grey-200;
+            color: $cpi-navy-dark;
+        }
+    }
+
+    .cpi-help-text {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.5;
+        color: $wl-empty;
+    }
+
+    // ---- Tarjeta Cursos
+    .cpi-table-wrap {
+        overflow-x: auto; // la tabla puede ser más ancha que la columna en pantallas chicas
+    }
+
+    .cpi-courses {
+        width: 100%;
+        margin: 0;
+        font-size: 14px;
+        line-height: 18.2px;
+        color: $wl-text;
+        border-collapse: collapse;
+
+        th {
+            font-weight: 700;
+            color: $wl-subtle;
+            padding: 0.5rem 0.75rem 0.5rem 0;
+            border-bottom: 1px solid $cpi-grey-200;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.5rem 0.75rem 0.5rem 0;
+            border-bottom: 1px solid $cpi-grey-100;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        a {
+            color: $cpi-navy;
+            text-decoration: none;
+
+            &:hover,
+            &:focus {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    // ---- Tarjeta "Más": el perfil estándar completo, colapsado.
+    .cpi-profile-more {
+        summary {
+            cursor: pointer;
+            list-style: revert; // conserva el triángulo nativo del <details>
+        }
+
+        .cpi-profile-more-body {
+            margin-top: 1rem;
+        }
+
+        // Dentro de "Más" las tarjetas del core no deben volver a llevar sombra:
+        // ya están dentro de una.
+        .node_category {
+            box-shadow: none;
+            border: 1px solid $cpi-grey-200;
+        }
+    }
+}
+
+// /user/profile.php imprime la Descripción por su cuenta, antes del árbol del perfil.
+// Nuestra plantilla la pinta dentro de la tarjeta "Acerca de mi" (§10), así que se
+// oculta la copia del core para no mostrarla dos veces.
+#page-user-profile .userprofile > .description {
+    display: none;
+}
