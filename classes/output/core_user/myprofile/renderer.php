@@ -183,9 +183,14 @@ class renderer extends \core_user\output\myprofile\renderer {
 
             'accesos'       => $accesos,
 
+            // El texto de "sin intereses" y el botón de añadir solo tienen sentido en el
+            // perfil propio: a un visitante no se le invita a editar lo que no es suyo.
+            'isownprofile'  => $currentuser,
             'intereses'     => $intereses,
             'hasintereses'  => !empty($intereses),
-            'interesesempty' => 'Da clic en el botón de ⊕ para agregar habilidades e intereses a tu perfil.',
+            'interesesempty' => $currentuser
+                ? 'Da clic en el botón de ⊕ para agregar habilidades e intereses a tu perfil.'
+                : 'Sin habilidades o intereses',
 
             'courses'       => $this->courses_for($user, $usercontext, $currentuser),
 

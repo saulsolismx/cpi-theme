@@ -996,9 +996,17 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
         }
     }
 
-    // Sin valor: gris, sin enlace.
+    // Sin valor: gris, sin enlace. El <i> va envuelto en un <span> para poder darle
+    // un nombre accesible en texto oculto sin que el lector lea la clase del icono.
     .cpi-social-off {
         color: $wl-social;
+        display: inline-flex;
+        align-items: center;
+
+        > i {
+            font-size: 30px;
+            line-height: 1;
+        }
     }
 
     // Con valor: navy y enlazado.

@@ -28,7 +28,7 @@
     * escuela/personal: [{icon, label, value, empty}]
     * redes: [{icon, title, haslink, url}]
     * accesos: [{icon, label, value}]
-    * intereses: [{name, url}], interesesempty
+    * isownprofile, intereses: [{name, url}], interesesempty
     * courses: [{name, url, category, teachers, hasteachers}]
     * more
 
@@ -47,6 +47,7 @@
         "hasredes": true,
         "redes": [{"icon": "fa-facebook-square", "title": "Facebook", "haslink": false, "url": ""}],
         "accesos": [{"icon": "fa-calendar", "label": "Activo desde", "value": "3-Oct-2026 05:02 pm"}],
+        "isownprofile": true,
         "hasintereses": false,
         "interesesempty": "Da clic en el botón de ⊕ para agregar habilidades e intereses a tu perfil.",
         "hascourses": false,
@@ -118,7 +119,10 @@
                                 </a>
                             {{/haslink}}
                             {{^haslink}}
-                                <i class="fab {{icon}} cpi-social cpi-social-off" aria-hidden="true" title="{{title}}"></i>
+                                <span class="cpi-social cpi-social-off">
+                                    <i class="fab {{icon}}" aria-hidden="true"></i>
+                                    <span class="visually-hidden">{{title}}: sin capturar</span>
+                                </span>
                             {{/haslink}}
                         {{/redes}}
                     </p>
@@ -149,12 +153,12 @@
             <section class="cpi-card">
                 <div class="cpi-card-head">
                     <h3 class="cpi-card-title">Habilidades e intereses</h3>
-                    {{#canedit}}
+                    {{#isownprofile}}
                         <a class="cpi-card-gear" href="{{editurl}}#id_moodle_interests" title="{{#str}}interests{{/str}}">
                             <i class="fas fa-plus-circle" aria-hidden="true"></i>
                             <span class="visually-hidden">{{#str}}interests{{/str}}</span>
                         </a>
-                    {{/canedit}}
+                    {{/isownprofile}}
                 </div>
                 {{#hasintereses}}
                     <p class="cpi-tags">
