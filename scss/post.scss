@@ -1252,3 +1252,24 @@ $cpi-surface-radius: 0.5rem;
     border-radius: $cpi-surface-radius;
     padding: 1rem 1.5rem;
 }
+
+// Actividades (pagelayout 'incourse': /mod/*/view.php, intento y revisión de
+// cuestionario, lección…): sin el .main-inner blanco, el contenido del módulo
+// quedaba como texto suelto sobre el gris. #region-main es el único contenedor
+// que agrupa .activity-header + div[role=main] + la navegación Anterior/Siguiente
+// (no hay wrapper intermedio), así que se convierte en la tarjeta, con el mismo
+// fondo, borde, radio y sombra que .card del tema. Global para todas las
+// actividades; las tarjetas internas (preguntas, descripción…) quedan dentro.
+body.pagelayout-incourse #region-main {
+    background-color: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 34, 86, 0.06);
+    padding: 1rem 1.5rem 1.5rem;
+}
+
+@include media-breakpoint-down(sm) {
+    body.pagelayout-incourse #region-main {
+        padding: 0.75rem;
+    }
+}
