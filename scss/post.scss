@@ -659,6 +659,13 @@ body.pagelayout-incourse .activity-navigation {
     .cpi-dashboard-row {
         margin-top: 0.5rem;
         row-gap: 1.5rem; // separación vertical cuando apilan en móvil
+        // Un .row de Bootstrap tiene margin lateral negativo de medio gutter y espera
+        // un contenedor con ese mismo padding. Aquí cuelga de #region-main (sin padding,
+        // .main-inner con 4px), así que sobresalía 2px en escritorio y 8px en móvil y
+        // el dashboard tenía scroll horizontal. Sin los márgenes negativos la fila mide
+        // lo que su contenedor; el gutter interno de las columnas no cambia.
+        margin-left: 0;
+        margin-right: 0;
     }
 
     // Columnas laterales: que no colapsen si están vacías (mientras no haya bloques).
@@ -1385,5 +1392,25 @@ $cpi-navbar-logo-height:   56px;
 
     .path-mod-assign .gradingtable thead tr {
         top: $cpi-navbar-mobile-height;
+    }
+}
+
+// Logo en móvil (<768px): Boost lo oculta con .d-none .d-md-flex en el brand.
+// .d-none es `display: none !important` de Bootstrap, así que solo otro !important
+// lo vence; es el único !important de este bloque y se acota al brand del navbar
+// fijo. Queda a la derecha del botón hamburguesa, en el orden del marcado de Boost.
+@include media-breakpoint-down(md) {
+    .navbar.fixed-top .navbar-brand.d-none {
+        display: flex !important;
+    }
+
+    .navbar.fixed-top .navbar-brand .logo {
+        height: 40px;
+        max-height: none;
+        width: auto;
+        object-fit: contain;
+        // Separación del botón hamburguesa. Va en el <img> porque el brand lleva
+        // .m-0 (margin !important) y el img solo fija margin-right (.me-1).
+        margin-left: 8px;
     }
 }
