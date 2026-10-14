@@ -164,6 +164,25 @@ class renderer extends \core_user\output\myprofile\renderer {
         $canedit = ($currentuser && has_capability('moodle/user:editownprofile', \context_system::instance()))
             || has_capability('moodle/user:update', $usercontext);
 
+        // --- Mensaje: sustituye al botón del encabezado estándar, que se oculta por CSS
+        // (#page-user-profile .page-context-header). A diferencia del core, no se ofrece
+        // en el perfil propio. can_send_message() ya comprueba moodle/site:sendmessage y
+        // las preferencias de privacidad del destinatario.
+        $canmessage = !$currentuser && !empty($CFG->messaging)
+            && \core_message\api::can_send_message($user->id, $USER->id);
+        $messageattrs = [];
+        if ($canmessage) {
+            // Mismos data-* que el botón del core; id propio porque el del encabezado
+            // (#message-user-button) sigue en el DOM aunque esté oculto.
+            $params = \core_message\helper::messageuser_link_params($user->id);
+            $messageattrs = [
+                ['name' => 'data-conversationid', 'value' => $params['data-conversationid']],
+                ['name' => 'data-userid', 'value' => $params['data-userid']],
+            ];
+            $this->page->requires->js_call_amd('core_message/message_user_button', 'send',
+                ['#cpi-message-user-button']);
+        }
+
         $data = [
             'fullname'      => fullname($user),
             'email'         => (string) $user->email,
@@ -173,6 +192,9 @@ class renderer extends \core_user\output\myprofile\renderer {
             'hasdescription' => ($description !== ''),
             'canedit'       => $canedit,
             'editurl'       => (new moodle_url('/user/edit.php', ['id' => $user->id]))->out(false),
+            'canmessage'    => $canmessage,
+            'messageurl'    => (new moodle_url('/message/index.php', ['id' => $user->id]))->out(false),
+            'messageattrs'  => $messageattrs,
 
             'escuela'       => $escuela,
             'hasescuela'    => !empty($escuela),

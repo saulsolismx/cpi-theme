@@ -821,7 +821,7 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
         border-radius: 5px;
         box-shadow: rgba(187, 188, 191, 0.16) 0 0 4px 0, rgba(226, 227, 228, 0.5) 0 0 12px 0;
         padding: 16px 24px 24px;
-        margin-bottom: 2rem;
+        margin-bottom: 24px; // entre tarjetas de la misma columna
 
         &:last-child {
             margin-bottom: 0;
@@ -841,7 +841,7 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
         font-size: 16px;
         font-weight: 700;
         line-height: 1.3;
-        letter-spacing: -0.5px;
+        letter-spacing: 0;
         color: $wl-title;
         margin: 0;
     }
@@ -865,22 +865,41 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
         margin-bottom: 1rem;
     }
 
+    // El contenedor mide lo mismo que el avatar: sin hueco alrededor.
     .cpi-profile-avatar {
-        width: 132px;
-        height: 132px;
-        border-radius: 50%;
+        width: 124px;
+        height: 124px;
         margin: 0 auto 0.75rem;
         display: flex;
         align-items: center;
         justify-content: center;
 
-        img {
+        // Foto subida (<img>) o iniciales (<span class="userinitials size-124">,
+        // lo que pinta user_picture() cuando el usuario no tiene foto).
+        img,
+        .userinitials {
             width: 124px;
             height: 124px;
+            margin: 0;
             border-radius: 50%;
-            object-fit: cover;
             box-shadow: rgba(187, 188, 191, 0.16) 0 0 4px 0, rgba(226, 227, 228, 0.5) 0 0 12px 0;
         }
+
+        img {
+            object-fit: cover;
+        }
+
+        .userinitials {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 44px;
+            line-height: 1;
+        }
+    }
+
+    .cpi-profile-message {
+        margin-top: 0.75rem;
     }
 
     .cpi-profile-name {
@@ -888,7 +907,7 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
         font-size: 16px;
         font-weight: 700;
         line-height: 1.3;
-        letter-spacing: -0.5px;
+        letter-spacing: 0;
         color: $wl-title;
         margin: 0;
     }
@@ -941,6 +960,8 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
         }
     }
 
+    // Etiqueta en una sola línea. min-width: lo que ocupa la más larga
+    // ("Último acceso": icono 20px + 8px + ~100px de texto en 14px negrita).
     .cpi-row-label {
         display: flex;
         flex: 0 0 40%;
@@ -949,7 +970,8 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
         font-weight: 700;
         line-height: 18.2px;
         color: $wl-text;
-        min-width: 0;
+        white-space: nowrap;
+        min-width: 140px;
     }
 
     .cpi-row-icon {
@@ -979,21 +1001,20 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
     }
 
     // ---- Redes sociales (§3, §6, §10)
+    // Los 6 iconos en una fila: si no caben, encoge el hueco (16px -> 4px) en vez
+    // de envolver. 6 x 30px + 5 x 16px = 260px; por debajo de eso el gap se reduce.
     .cpi-socials {
         margin: 0;
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         align-items: center;
+        gap: clamp(4px, calc((100% - 180px) / 5), 16px);
     }
 
     .cpi-social {
         font-size: 30px;
         line-height: 1;
-        margin-right: 16px;
-
-        &:last-child {
-            margin-right: 0;
-        }
+        flex: 0 0 auto;
     }
 
     // Sin valor: gris, sin enlace. El <i> va envuelto en un <span> para poder darle
@@ -1119,4 +1140,45 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
 // oculta la copia del core para no mostrarla dos veces.
 #page-user-profile .userprofile > .description {
     display: none;
+}
+
+// Encabezado estándar del perfil (avatar 100px, h1 con el nombre y los botones
+// Mensaje / Añadir a contactos): la tarjeta "Acerca de mi" ya muestra todo eso,
+// con su propio botón de Mensaje. Se oculta solo el bloque de contexto, no todo
+// #page-header, para conservar el botón de página (Restablecer/Personalizar).
+#page-user-profile #page-header .page-context-header {
+    display: none;
+}
+
+// Perfil (/user/profile.php, pagelayout 'mypublic' + limitedwidth) a ancho
+// completo, mismo patrón que el dashboard: body + .limitedwidth + pagelayout
+// (1,4,1) vence a Boost body.limitedwidth #page.drawers .main-inner (1,3,1).
+// Fondo transparente para que se vea el gris del body; solo las tarjetas en blanco.
+body.pagelayout-mypublic.limitedwidth #page.drawers .main-inner {
+    max-width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+    background-color: transparent;
+}
+
+body.pagelayout-mypublic #page-header.header-maxwidth {
+    max-width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+body.pagelayout-mypublic #region-main {
+    background-color: transparent;
+}
+
+// El padding lateral ya lo da .main-inner (24px): sin el 3rem de #page.drawers
+// ni el 15px de div[role=main] que Boost añade desde md.
+body.pagelayout-mypublic #page.drawers {
+    padding-left: 0;
+    padding-right: 0;
+
+    div[role="main"] {
+        padding-left: 0;
+        padding-right: 0;
+    }
 }

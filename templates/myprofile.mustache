@@ -25,6 +25,7 @@
     Context variables required for this template:
     * fullname, email, showemail, avatar, description, hasdescription
     * canedit, editurl
+    * canmessage, messageurl, messageattrs: [{name, value}]
     * escuela/personal: [{icon, label, value, empty}]
     * redes: [{icon, title, haslink, url}]
     * accesos: [{icon, label, value}]
@@ -41,6 +42,7 @@
         "hasdescription": false,
         "canedit": true,
         "editurl": "/user/edit.php?id=3",
+        "canmessage": false,
         "hasescuela": true,
         "escuela": [{"icon": "fa-school", "label": "Nivel", "value": "Licenciatura", "empty": false}],
         "haspersonal": false,
@@ -75,6 +77,13 @@
                     <div class="cpi-profile-avatar">{{{avatar}}}</div>
                     <p class="cpi-profile-name">{{fullname}}</p>
                     {{#showemail}}<p class="cpi-profile-email">{{email}}</p>{{/showemail}}
+                    {{#canmessage}}
+                        <a id="cpi-message-user-button" role="button" class="btn btn-sm btn-outline-primary cpi-profile-message"
+                            href="{{messageurl}}" {{#messageattrs}}{{name}}="{{value}}" {{/messageattrs}}>
+                            <i class="fas fa-comment" aria-hidden="true"></i>
+                            {{#str}}message, message{{/str}}
+                        </a>
+                    {{/canmessage}}
                     {{#hasdescription}}<div class="cpi-profile-desc">{{{description}}}</div>{{/hasdescription}}
                 </div>
 
