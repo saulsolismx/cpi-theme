@@ -249,10 +249,17 @@ class renderer extends \core_user\output\myprofile\renderer {
             return null;
         }
         $empty = $field->is_empty();
+        $value = $empty ? $emptytext : $field->display_data();
+        // En los menús "Sin especificar" es una opción elegida, no un campo vacío,
+        // pero se pinta en gris igual que "Sin tutor" y "-".
+        if (!$empty && $field->field->datatype === 'menu'
+                && trim(strip_tags((string) $value)) === 'Sin especificar') {
+            $empty = true;
+        }
         return [
             'icon'  => $icon,
             'label' => $label,
-            'value' => $empty ? $emptytext : $field->display_data(),
+            'value' => $value,
             'empty' => $empty,
         ];
     }

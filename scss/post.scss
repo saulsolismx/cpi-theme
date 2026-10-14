@@ -995,6 +995,23 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
         word-break: break-word;
     }
 
+    // Fechas de Accesos: nunca se parten. En móvil cabe porque la etiqueta encoge.
+    .cpi-row-value.cpi-nowrap {
+        white-space: nowrap;
+        word-break: normal;
+    }
+
+    // ≤576px (390px: tarjeta de ~294px útiles): la etiqueta pasa de 40%/140px a su
+    // ancho natural con mínimo 128px ("Último acceso" ≈ 20 + 8 + 100px), para que
+    // la fecha (~145px) quepa en la misma línea sin partirse.
+    @media (max-width: 576px) {
+        .cpi-row-label {
+            flex: 0 0 auto;
+            min-width: 128px;
+            margin-right: 12px;
+        }
+    }
+
     // Vacíos en gris: "Sin tutor", "Sin especificar", "-" (§4).
     .cpi-empty {
         color: $wl-empty;
@@ -1142,11 +1159,13 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
     display: none;
 }
 
-// Encabezado estándar del perfil (avatar 100px, h1 con el nombre y los botones
-// Mensaje / Añadir a contactos): la tarjeta "Acerca de mi" ya muestra todo eso,
-// con su propio botón de Mensaje. Se oculta solo el bloque de contexto, no todo
-// #page-header, para conservar el botón de página (Restablecer/Personalizar).
-#page-user-profile #page-header .page-context-header {
+// Encabezado estándar del perfil oculto completo, para todos los usuarios: avatar,
+// h1, Mensaje / Añadir a contactos y Restablecer / Personalizar esta página.
+// La tarjeta "Acerca de mi" ya muestra nombre, avatar y su propio botón Mensaje.
+// Se apunta a #page-header y no a .page-context-header: este último lleva la
+// utilidad .d-flex de Bootstrap (display:flex !important), que gana a cualquier
+// display:none sin !important. #page-header no tiene utilidades de display.
+#page-user-profile #page-header {
     display: none;
 }
 
@@ -1159,12 +1178,6 @@ body.pagelayout-mypublic.limitedwidth #page.drawers .main-inner {
     padding-left: 24px;
     padding-right: 24px;
     background-color: transparent;
-}
-
-body.pagelayout-mypublic #page-header.header-maxwidth {
-    max-width: 100%;
-    padding-left: 24px;
-    padding-right: 24px;
 }
 
 body.pagelayout-mypublic #region-main {
