@@ -1,0 +1,53 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_myprofile/myprofile
+
+    Override de theme_cpi: avatar centrado de 96px, nombre y filas con icono navy
+    (mismo estilo que las filas del perfil). Datos: theme_cpi\output\block_myprofile\renderer.
+
+    Context variables required for this template:
+    * showpicture, userpicture, userfullname
+    * rows: [{icon, label, value, empty, wrap}]
+
+    Example context (json):
+    {
+        "showpicture": true,
+        "userpicture": "<img src='#' alt=''>",
+        "userfullname": "Alumno Prueba",
+        "rows": [
+            {"icon": "fa-mobile-alt", "label": "Celular", "value": "-", "empty": true, "wrap": false},
+            {"icon": "fa-envelope", "label": "Correo", "value": "alumno@example.com", "empty": false, "wrap": true},
+            {"icon": "fa-calendar", "label": "Fecha de inscripción", "value": "9-Sep-2026", "empty": false, "wrap": false}
+        ]
+    }
+}}
+<div class="cpi-myprofile">
+    {{#showpicture}}
+        <div class="cpi-myprofile-avatar">{{{userpicture}}}</div>
+    {{/showpicture}}
+    <p class="cpi-myprofile-name">{{userfullname}}</p>
+    <ul class="cpi-myprofile-rows">
+        {{#rows}}
+            <li class="cpi-myprofile-row">
+                <i class="fas {{icon}} cpi-myprofile-icon" aria-hidden="true"></i>
+                <span class="cpi-myprofile-label">{{label}}</span>
+                <span class="cpi-myprofile-value{{#empty}} cpi-empty{{/empty}}{{#wrap}} cpi-wrap{{/wrap}}">{{{value}}}</span>
+            </li>
+        {{/rows}}
+    </ul>
+</div>

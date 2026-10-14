@@ -1414,3 +1414,111 @@ $cpi-navbar-logo-height:   56px;
         margin-left: 8px;
     }
 }
+
+// ============================================================================
+// Bloque "Usuario identificado" (block_myprofile) en el dashboard.
+// Marcado: templates/block_myprofile/myprofile.mustache + classes/output/block_myprofile.
+// Avatar 96px centrado, nombre en Poppins 18px y filas con icono navy, con los
+// colores y tamaños de las filas del perfil ($wl-*). La columna izquierda es
+// angosta (~230px útiles a 1440), así que cada fila apila etiqueta y valor.
+// ============================================================================
+.block_myprofile .content {
+    display: block; // block_myprofile/styles.css lo pone en flex (foto + texto lado a lado)
+}
+
+.cpi-myprofile {
+    width: 100%;
+
+    .cpi-myprofile-avatar {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 0.75rem;
+
+        img,
+        .userinitials {
+            width: 96px;
+            height: 96px;
+            margin: 0;
+            border-radius: 50%;
+            box-shadow: rgba(187, 188, 191, 0.16) 0 0 4px 0, rgba(226, 227, 228, 0.5) 0 0 12px 0;
+        }
+
+        img {
+            object-fit: cover;
+        }
+
+        .userinitials {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            line-height: 1;
+        }
+    }
+
+    .cpi-myprofile-name {
+        font-family: $headings-font-family;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.3;
+        letter-spacing: 0;
+        color: $wl-title;
+        text-align: center;
+        margin: 0 0 1rem;
+        word-break: break-word;
+    }
+
+    .cpi-myprofile-rows {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    // Icono en su columna; etiqueta arriba y valor abajo.
+    .cpi-myprofile-row {
+        display: grid;
+        grid-template-columns: 20px 1fr;
+        column-gap: 8px;
+        margin-bottom: 0.75rem;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .cpi-myprofile-icon {
+        grid-row: span 2;
+        font-size: 16px;
+        line-height: 18.2px;
+        color: $cpi-navy;
+        text-align: left;
+    }
+
+    .cpi-myprofile-label {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 18.2px;
+        color: $wl-text;
+    }
+
+    .cpi-myprofile-value {
+        font-size: 14px;
+        line-height: 18.2px;
+        color: $wl-text;
+        min-width: 0;
+        white-space: nowrap;
+
+        &.cpi-wrap {
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        &.cpi-empty {
+            color: $wl-empty;
+        }
+
+        a {
+            color: $cpi-navy;
+        }
+    }
+}

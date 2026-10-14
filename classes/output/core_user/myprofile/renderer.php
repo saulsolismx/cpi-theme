@@ -21,6 +21,7 @@ use core_tag_tag;
 use core_user;
 use core_user\output\myprofile\tree;
 use moodle_url;
+use theme_cpi\local\dates;
 
 /**
  * Página de perfil de CPI: réplica del perfil de welearning.
@@ -38,9 +39,6 @@ use moodle_url;
  * el visitante, y los campos nativos se filtran con $CFG->hiddenuserfields y capacidades.
  */
 class renderer extends \core_user\output\myprofile\renderer {
-
-    /** @var string[] Abreviaturas de mes en español (§5). */
-    private const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
     /**
      * Pinta el árbol del perfil con la plantilla de CPI.
@@ -132,9 +130,9 @@ class renderer extends \core_user\output\myprofile\renderer {
 
         // --- Accesos (§5). Formato D-Mmm-AAAA hh:mm am/pm.
         $accesos = [
-            ['icon' => 'fa-calendar', 'label' => 'Activo desde',  'value' => $this->cpi_date($user->timecreated)],
-            ['icon' => 'fa-calendar', 'label' => 'Primer acceso', 'value' => $this->cpi_date($user->firstaccess)],
-            ['icon' => 'fa-calendar', 'label' => 'Último acceso', 'value' => $this->cpi_date($user->lastaccess)],
+            ['icon' => 'fa-calendar', 'label' => 'Activo desde',  'value' => dates::format($user->timecreated)],
+            ['icon' => 'fa-calendar', 'label' => 'Primer acceso', 'value' => dates::format($user->firstaccess)],
+            ['icon' => 'fa-calendar', 'label' => 'Último acceso', 'value' => dates::format($user->lastaccess)],
         ];
 
         // --- Habilidades e intereses (tags del core).
@@ -325,33 +323,6 @@ class renderer extends \core_user\output\myprofile\renderer {
             return $value;
         }
         return 'https://' . ltrim($value, '/');
-    }
-
-    /**
-     * Fecha con el formato de welearning (§5): D-Mmm-AAAA hh:mm am/pm.
-     * Día sin cero inicial, mes abreviado en español, hora de 12 h con dos dígitos.
-     *
-     * @param int|null $timestamp
-     * @return string
-     */
-    private function cpi_date(?int $timestamp): string {
-        if (empty($timestamp)) {
-            return '-';
-        }
-        $d = usergetdate($timestamp);
-        $hour = $d['hours'] % 12;
-        if ($hour === 0) {
-            $hour = 12;
-        }
-        return sprintf(
-            '%d-%s-%d %02d:%02d %s',
-            $d['mday'],
-            self::MESES[$d['mon'] - 1],
-            $d['year'],
-            $hour,
-            $d['minutes'],
-            $d['hours'] < 12 ? 'am' : 'pm'
-        );
     }
 
     /**
