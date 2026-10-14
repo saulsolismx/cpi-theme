@@ -1195,3 +1195,60 @@ body.pagelayout-mypublic #page.drawers {
         padding-right: 0;
     }
 }
+
+// ============================================================================
+// Fondo gris uniforme en todo el campus.
+// ----------------------------------------------------------------------------
+// Boost pinta un panel blanco detrás del contenido (#page.drawers .main-inner,
+// layout.scss: background-color $white) y, dentro, #region-main con $body-bg
+// (core.scss). Resultado: marco blanco alrededor de un rectángulo gris, una franja
+// blanca entre el índice del curso y el contenido, y un corte donde termina el
+// .main-inner. Se dejan ambos transparentes para que se vea el gris del body
+// ($body-bg, #f6f7f9). Misma especificidad que Boost (1,1,1 y 1,0,0) y este
+// archivo va después en el bundle: no hace falta !important.
+// Lo blanco pasa a ser cada pieza de contenido (tarjetas, bloques, secciones…).
+// ============================================================================
+#page.drawers .main-inner,
+#region-main {
+    background-color: transparent;
+}
+
+// Canal del scrollbar del índice: Boost lo pinta $gray-100 (#f8f9fa) con
+// thin-scrolls(); sobre el drawer blanco se veía como una franja clara.
+#theme_boost-drawers-courseindex .drawercontent {
+    scrollbar-color: $gray-600 transparent;
+
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+}
+
+// Piezas que deben seguir blancas: sin el .main-inner blanco debajo, las que no
+// tenían fondo propio quedarían gris sobre gris.
+$cpi-surface-radius: 0.5rem;
+
+// Secciones del curso: la tarjeta ya la dibuja Boost en .section-item (borde 1px
+// y radio 16px), sin fondo propio; solo se le da el blanco. Pintar el li.section
+// creaba un doble marco (tarjeta blanca alrededor de la tarjeta con borde).
+.course-content .section-item {
+    background-color: $white;
+}
+
+// Cuadrícula del calendario (vista mensual / día) solo en /calendar/view.php.
+// En el dashboard el bloque de calendario también vive en #region-main pero ya va
+// dentro de una .card blanca: sin este acotado ganaba un padding extra.
+#page-calendar-view #region-main .calendarwrapper {
+    background-color: $white;
+    border-radius: $cpi-surface-radius;
+    padding: 1rem;
+}
+
+// Formularios de configuración: ajustes del sitio (#adminsettings) y formularios
+// mform de primer nivel (editar curso, editar perfil, preferencias…).
+#adminsettings,
+#region-main div[role="main"] > form.mform,
+#region-main div[role="main"] > div > form.mform {
+    background-color: $white;
+    border-radius: $cpi-surface-radius;
+    padding: 1rem 1.5rem;
+}
