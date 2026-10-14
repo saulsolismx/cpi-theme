@@ -1273,3 +1273,117 @@ body.pagelayout-incourse #region-main {
         padding: 0.75rem;
     }
 }
+
+// ============================================================================
+// Navbar más grande y espaciado (escritorio ≥768px).
+// ----------------------------------------------------------------------------
+// Alto: $navbar-height = 72px en pre.scss (Boost lo usa en todos los offsets).
+// Logo 56px de alto: (72 - 56) / 2 = 8px de aire arriba y abajo, 24px a la izquierda.
+// Enlaces 17px/500 con 14px de padding lateral = 28px entre textos. Del logo a
+// "Inicio" quedan ~42px: 4px (.me-1 del img) + 24px (.me-4 del brand) + 14px de
+// padding del enlace. Esos dos márgenes son utilidades de Bootstrap con !important,
+// así que no se tocan y se compensa quitando el margen del <ul>.
+// ============================================================================
+$cpi-navbar-mobile-height: 60px;
+$cpi-navbar-logo-height:   56px;
+
+@include media-breakpoint-up(md) {
+    .navbar.fixed-top > .container-fluid {
+        padding-left: 24px;
+    }
+
+    // Boost: max-height calc($navbar-height - 2 * $primary-nav-padding-y) = 64px.
+    // Alto fijo y ancho automático: el logo (300x277) no se deforma.
+    .navbar.fixed-top .navbar-brand .logo {
+        height: $cpi-navbar-logo-height;
+        max-height: none;
+        width: auto;
+        object-fit: contain;
+    }
+
+    // El <ul> del menú hereda `ol, ul, dl { margin: 0 1em 0 2em }` del reset
+    // legado de core: 32px extra entre el logo y "Inicio".
+    .navbar .primary-navigation .more-nav {
+        margin: 0;
+    }
+
+    // 17px fijo: en el dashboard body.pagelayout-mydashboard baja la fuente a
+    // 0.9rem y el menú heredaba 14.4px.
+    .navbar .primary-navigation .navigation .nav-link {
+        font-size: 17px;
+        font-weight: 500;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    // Indicador del activo: Boost lo pinta con border-bottom $primary (navy),
+    // invisible sobre el navbar navy. Se conserva, en dorado.
+    .navbar .primary-navigation .moremenu .nav-link.active {
+        border-bottom-color: $cpi-gold;
+        background-color: transparent;
+    }
+
+    // Lado derecho (modo edición, campana, mensajes, avatar): centrado vertical
+    // en los 72px y 16px entre elementos.
+    #usernavigation {
+        align-items: center;
+        gap: 16px;
+
+        > * {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Móvil (<768px): navbar de 60px como antes. Boost oculta el logo (.d-none
+// .d-md-flex) y el menú va en el botón hamburguesa; aquí solo se devuelven a
+// 60px los offsets que $navbar-height (72px) movió.
+// ----------------------------------------------------------------------------
+@include media-breakpoint-down(md) {
+    .navbar.fixed-top {
+        height: $cpi-navbar-mobile-height + 1px;
+    }
+
+    // #page.drawers (1,1,0): Boost también fija margin-top en layout.scss con esa
+    // especificidad; solo #page (1,0,0) perdía y quedaban 12px de hueco.
+    #page,
+    #page.drawers {
+        margin-top: $cpi-navbar-mobile-height;
+    }
+
+    .pagelayout-embedded #page {
+        margin-top: 0;
+    }
+
+    .popover-region .popover-region-container {
+        top: $cpi-navbar-mobile-height;
+    }
+
+    .popover-region .count-container {
+        top: $cpi-navbar-mobile-height * 0.25;
+    }
+
+    [data-region="drawer"] {
+        top: $cpi-navbar-mobile-height;
+        height: calc(100% - #{$cpi-navbar-mobile-height});
+    }
+
+    [data-region=right-hand-drawer].drawer {
+        top: $cpi-navbar-mobile-height;
+        height: calc(100% - #{$cpi-navbar-mobile-height});
+    }
+
+    .drawer-toggles .drawer-toggler {
+        top: calc(#{$cpi-navbar-mobile-height} + 1rem);
+    }
+
+    #quiz-timer-wrapper {
+        top: $cpi-navbar-mobile-height + 5px;
+    }
+
+    .path-mod-assign .gradingtable thead tr {
+        top: $cpi-navbar-mobile-height;
+    }
+}

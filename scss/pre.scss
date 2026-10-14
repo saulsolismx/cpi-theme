@@ -23,6 +23,12 @@ $link-hover-color: $cpi-navy-dark;
 $font-family-sans-serif: 'Roboto', system-ui, -apple-system, "Segoe UI", sans-serif;
 $headings-font-family:   'Poppins', 'Roboto', sans-serif;
 $font-size-base:   1rem;
+
+// Navbar más alto en escritorio (petición de Felipe, 2026-10). Boost declara
+// $navbar-height con !default y lo usa en el navbar, el margin-top de #page, los
+// drawers, popovers y elementos sticky: cambiarlo aquí mueve todos los offsets a la
+// vez. En móvil (<768px) se vuelve a 60px con overrides en post.scss.
+$navbar-height:    72px;
 $line-height-base: 1.6;
 $headings-font-weight: 600;
 
