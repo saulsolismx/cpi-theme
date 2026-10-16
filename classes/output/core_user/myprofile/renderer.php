@@ -202,11 +202,13 @@ class renderer extends \core_user\output\myprofile\renderer {
 
             'inmo'          => $this->inmobiliaria($fields, $currentuser, $editurl),
 
-            // Todo lo que trae el perfil estándar (cursos, informes, sesiones…) se conserva
+            // Todo lo que trae el perfil estándar (detalles, informes, sesiones…) se conserva
             // en una tarjeta colapsable para no perder funcionalidad de administración.
-            // Solo para el propio usuario y para quien administra.
-            'hasmore'       => $canviewpersonal,
-            'more'          => $canviewpersonal ? parent::render_tree($tree) : '',
+            // Solo para administradores (moodle/user:viewalldetails), también en su propio
+            // perfil. El alumno tiene Calificaciones, Preferencias y Cerrar sesión en el
+            // menú de usuario y el Resumen de retención de datos en el pie de página.
+            'hasmore'       => $canviewall,
+            'more'          => $canviewall ? parent::render_tree($tree) : '',
         ];
 
         return $this->render_from_template('theme_cpi/myprofile', $data);
