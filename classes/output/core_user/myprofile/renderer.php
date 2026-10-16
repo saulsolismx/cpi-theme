@@ -17,7 +17,6 @@
 namespace theme_cpi\output\core_user\myprofile;
 
 use context_user;
-use core_tag_tag;
 use core_user;
 use core_user\output\myprofile\tree;
 use moodle_url;
@@ -68,8 +67,8 @@ class renderer extends \core_user\output\myprofile\renderer {
         $currentuser  = ($user->id == $USER->id);
         $canviewall   = has_capability('moodle/user:viewalldetails', $usercontext);
         // "Personal" y "Escuela" son privados: solo el propio usuario y quien tenga
-        // user:viewalldetails. Para los campos personalizados esto ya lo resuelve
-        // is_visible(); esta bandera aplica la misma regla a los nativos (§10).
+        // user:viewalldetails (los administradores). Para los campos personalizados esto ya
+        // lo resuelve is_visible(); esta bandera aplica la misma regla a los nativos (§10).
         $canviewpersonal = $currentuser || $canviewall;
 
         // Campos personalizados, indexados por shortname.
@@ -86,22 +85,19 @@ class renderer extends \core_user\output\myprofile\renderer {
             $hidden = array_flip(explode(',', (string) $CFG->hiddenuserfields));
         }
 
-        // --- Escuela (§1): Nivel, Tutor.
+        // --- Escuela: solo Nivel. (Tutor sigue existiendo como campo, pero no se pinta.)
         $escuela = array_values(array_filter([
-            $this->custom_row($fields, 'level', 'fa-school', 'Nivel'),
-            $this->custom_row($fields, 'guardian', 'fa-user-graduate', 'Tutor', 'Sin tutor'),
+            $this->custom_row($fields, 'level', 'fa-school', 'Nivel', 'Sin especificar'),
         ]));
 
-        // --- Personal (§1), en el orden de welearning.
+        // --- Personal: Género, Celular, Cumpleaños, Ciudad. Teléfono, Estado civil,
+        // Dirección y País siguen en la base de datos y en el formulario de edición; solo
+        // dejan de pintarse aquí.
         $personal = array_values(array_filter([
             $this->custom_row($fields, 'gender', 'fa-venus-mars', 'Género', 'Sin especificar'),
-            $this->native_row($user, 'phone1', 'fa-phone-alt', 'Teléfono', $hidden, $canviewpersonal),
-            $this->native_row($user, 'phone2', 'fa-mobile', 'Celular', $hidden, $canviewpersonal),
+            $this->native_row($user, 'phone2', 'fa-mobile-alt', 'Celular', $hidden, $canviewpersonal),
             $this->custom_row($fields, 'birthdate', 'fa-birthday-cake', 'Cumpleaños'),
-            $this->custom_row($fields, 'maritalstatus', 'fa-heart', 'Estado civil', 'Sin especificar'),
-            $this->native_row($user, 'address', 'fa-map-marker-alt', 'Dirección', $hidden, $canviewpersonal),
             $this->native_row($user, 'city', 'fa-city', 'Ciudad', $hidden, $canviewpersonal),
-            $this->native_row($user, 'country', 'fa-globe-americas', 'País', $hidden, $canviewpersonal),
         ]));
 
         // --- Redes sociales (§3, §6, §10): los 6 iconos siempre, con enlace solo si hay valor.
@@ -135,17 +131,6 @@ class renderer extends \core_user\output\myprofile\renderer {
             ['icon' => 'fa-calendar', 'label' => 'Último acceso', 'value' => dates::format($user->lastaccess)],
         ];
 
-        // --- Habilidades e intereses (tags del core).
-        $intereses = [];
-        if (!empty($CFG->usetags)) {
-            foreach (core_tag_tag::get_item_tags('core', 'user', $user->id) as $tag) {
-                $intereses[] = [
-                    'name' => $tag->get_display_name(false),
-                    'url'  => $tag->get_view_url()->out(false),
-                ];
-            }
-        }
-
         // --- Descripción: va dentro de la tarjeta (§10). profile.php la imprime antes del
         // árbol; esa copia se oculta por CSS (.userprofile > .description) para no duplicarla.
         $description = '';
@@ -158,14 +143,15 @@ class renderer extends \core_user\output\myprofile\renderer {
             );
         }
 
-        // --- Engrane: editar perfil.
-        $canedit = ($currentuser && has_capability('moodle/user:editownprofile', \context_system::instance()))
-            || has_capability('moodle/user:update', $usercontext);
+        // --- Engrane: solo en el perfil propio (el admin edita a otros desde la tarjeta "Más"
+        // o desde Administración del sitio).
+        $canedit = $currentuser && has_capability('moodle/user:editownprofile', \context_system::instance());
+        $editurl = (new moodle_url('/user/edit.php', ['id' => $user->id]))->out(false);
 
         // --- Mensaje: sustituye al botón del encabezado estándar, que se oculta por CSS
-        // (#page-user-profile .page-context-header). A diferencia del core, no se ofrece
-        // en el perfil propio. can_send_message() ya comprueba moodle/site:sendmessage y
-        // las preferencias de privacidad del destinatario.
+        // (#page-user-profile #page-header). A diferencia del core, no se ofrece en el
+        // perfil propio. can_send_message() ya comprueba moodle/site:sendmessage y las
+        // preferencias de privacidad del destinatario.
         $canmessage = !$currentuser && !empty($CFG->messaging)
             && \core_message\api::can_send_message($user->id, $USER->id);
         $messageattrs = [];
@@ -181,6 +167,12 @@ class renderer extends \core_user\output\myprofile\renderer {
                 ['#cpi-message-user-button']);
         }
 
+        // --- Cursos: el propio alumno y los administradores ven todos; un compañero, solo
+        // los que comparte con el usuario visto. Sin cursos que mostrar a un compañero, la
+        // tarjeta no se pinta.
+        $seeall = $canviewpersonal;
+        $courses = $this->courses_for($user, $seeall);
+
         $data = [
             'fullname'      => fullname($user),
             'email'         => (string) $user->email,
@@ -189,7 +181,7 @@ class renderer extends \core_user\output\myprofile\renderer {
             'description'   => $description,
             'hasdescription' => ($description !== ''),
             'canedit'       => $canedit,
-            'editurl'       => (new moodle_url('/user/edit.php', ['id' => $user->id]))->out(false),
+            'editurl'       => $editurl,
             'canmessage'    => $canmessage,
             'messageurl'    => (new moodle_url('/message/index.php', ['id' => $user->id]))->out(false),
             'messageattrs'  => $messageattrs,
@@ -202,28 +194,94 @@ class renderer extends \core_user\output\myprofile\renderer {
             'hasredes'      => !empty($redes),
 
             'accesos'       => $accesos,
-
-            // El texto de "sin intereses" y el botón de añadir solo tienen sentido en el
-            // perfil propio: a un visitante no se le invita a editar lo que no es suyo.
             'isownprofile'  => $currentuser,
-            'intereses'     => $intereses,
-            'hasintereses'  => !empty($intereses),
-            'interesesempty' => $currentuser
-                ? 'Da clic en el botón de ⊕ para agregar habilidades e intereses a tu perfil.'
-                : 'Sin habilidades o intereses',
 
-            'courses'       => $this->courses_for($user, $usercontext, $currentuser),
+            'courses'       => $courses,
+            'hascourses'    => !empty($courses),
+            'showcourses'   => !empty($courses) || $seeall,
+
+            'inmo'          => $this->inmobiliaria($fields, $currentuser, $editurl),
 
             // Todo lo que trae el perfil estándar (cursos, informes, sesiones…) se conserva
             // en una tarjeta colapsable para no perder funcionalidad de administración.
-            // Solo para el propio usuario y para quien administra: a un compañero de curso
-            // no se le amplía lo que ya ve en las tarjetas de arriba.
+            // Solo para el propio usuario y para quien administra.
             'hasmore'       => $canviewpersonal,
             'more'          => $canviewpersonal ? parent::render_tree($tree) : '',
         ];
-        $data['hascourses'] = !empty($data['courses']);
 
         return $this->render_from_template('theme_cpi/myprofile', $data);
+    }
+
+    /**
+     * Tarjeta "Mi inmobiliaria": campos de la categoría del mismo nombre (visibles para todos).
+     *
+     * Las URL y el WhatsApp se validan aquí: el inventario solo se enlaza con http/https, y
+     * el WhatsApp se limpia a dígitos y se enlaza solo con 10 (o 12 que empiecen con 52, el
+     * código de México, que se quita).
+     *
+     * @param array $fields mapa shortname => profile_field_base
+     * @param bool $currentuser
+     * @param string $editurl
+     * @return array
+     */
+    private function inmobiliaria(array $fields, bool $currentuser, string $editurl): array {
+        $value = function (string $shortname) use ($fields): string {
+            if (!isset($fields[$shortname]) || !$fields[$shortname]->is_visible()) {
+                return '';
+            }
+            $v = trim((string) $fields[$shortname]->data);
+            return ($v === 'Sin especificar') ? '' : $v;
+        };
+
+        $rows = [];
+        foreach ([
+            ['inmobiliaria', 'fa-building', 'Inmobiliaria'],
+            ['zonaoperacion', 'fa-map-marker-alt', 'Zona de operación'],
+            ['especialidad', 'fa-tag', 'Especialidad'],
+            ['operacion', 'fa-handshake', 'Operación'],
+            ['numpropiedades', 'fa-home', 'Propiedades'],
+        ] as [$shortname, $icon, $label]) {
+            $v = $value($shortname);
+            if ($v !== '') {
+                $rows[] = ['icon' => $icon, 'label' => $label, 'value' => s($v), 'empty' => false];
+            }
+        }
+
+        $comparte = ($value('compartecomision') === '1');
+
+        $inventario = '';
+        $raw = $value('inventariourl');
+        if ($raw !== '') {
+            $url = preg_match('#^[a-z][a-z0-9+.-]*://#i', $raw) ? $raw : 'https://' . ltrim($raw, '/');
+            $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+            $url = clean_param($url, PARAM_URL);
+            if ($url !== '' && in_array($scheme, ['http', 'https'], true)) {
+                $inventario = $url;
+            }
+        }
+
+        $whatsapp = '';
+        $digits = preg_replace('/\D+/', '', $value('whatsappnegocio'));
+        if (strlen($digits) === 12 && strpos($digits, '52') === 0) {
+            $digits = substr($digits, 2);
+        }
+        if (strlen($digits) === 10) {
+            $whatsapp = 'https://wa.me/52' . $digits;
+        }
+
+        $has = !empty($rows) || $comparte || $inventario !== '' || $whatsapp !== '';
+        return [
+            'has'          => $has,
+            'rows'         => $rows,
+            'comparte'     => $comparte,
+            'inventario'   => $inventario,
+            'hasinventario' => ($inventario !== ''),
+            'whatsapp'     => $whatsapp,
+            'haswhatsapp'  => ($whatsapp !== ''),
+            'hasbuttons'   => ($inventario !== '' || $whatsapp !== ''),
+            'isown'        => $currentuser,
+            'editurl'      => $editurl,
+        ];
     }
 
     /**
@@ -326,39 +384,47 @@ class renderer extends \core_user\output\myprofile\renderer {
     }
 
     /**
-     * Tarjeta "Cursos" (§10): Nombre del curso | Categoría | Profesor.
+     * Tarjeta "Cursos": Nombre del curso | Categoría | Profesor.
      *
-     * Mismo criterio de acceso que el perfil estándar: el propio usuario o quien tenga
-     * moodle/user:viewdetails. Se omiten los cursos ocultos que el visitante no puede ver.
+     * Cursos en los que está inscrito el usuario visto. Si el visitante no es el propio
+     * usuario ni un administrador ($seeall = false), solo los que comparten ambos. El nombre
+     * enlaza al curso solo si el visitante puede entrar (can_access_course). Profesor =
+     * usuarios con el rol editingteacher en el curso.
      *
-     * @param \stdClass $user
-     * @param \context $usercontext
-     * @param bool $currentuser
+     * @param \stdClass $user usuario visto
+     * @param bool $seeall
      * @return array
      */
-    private function courses_for(\stdClass $user, \context $usercontext, bool $currentuser): array {
-        if (!$currentuser && !has_capability('moodle/user:viewdetails', $usercontext)) {
-            return [];
+    private function courses_for(\stdClass $user, bool $seeall): array {
+        global $DB, $USER;
+
+        $courses = enrol_get_users_courses($user->id, true, ['category']);
+        if (!$seeall) {
+            $mine = enrol_get_users_courses($USER->id, true, 'id');
+            $courses = array_intersect_key($courses, $mine);
         }
+        $teacherrole = $DB->get_field('role', 'id', ['shortname' => 'editingteacher']);
 
         $rows = [];
-        foreach (enrol_get_users_courses($user->id, true, ['category']) as $course) {
+        foreach ($courses as $course) {
             $coursecontext = \context_course::instance($course->id);
             if (!$course->visible && !has_capability('moodle/course:viewhiddencourses', $coursecontext)) {
                 continue;
             }
 
             $teachers = [];
-            foreach (get_role_users(0, $coursecontext, false, 'u.id, u.firstname, u.lastname, r.archetype',
-                    null, true, '', '', '', 'r.archetype IN (:a1, :a2)',
-                    ['a1' => 'editingteacher', 'a2' => 'teacher']) as $t) {
-                $teachers[$t->id] = fullname($t);
+            if ($teacherrole) {
+                foreach (get_role_users($teacherrole, $coursecontext, false, 'u.id, ' . implode(', ',
+                        array_map(fn($f) => 'u.' . $f, \core_user\fields::get_name_fields())), 'u.lastname, u.firstname') as $t) {
+                    $teachers[$t->id] = fullname($t);
+                }
             }
 
             $category = \core_course_category::get($course->category, IGNORE_MISSING, true);
             $rows[] = [
                 'name'        => format_string($course->fullname, true, ['context' => $coursecontext]),
                 'url'         => (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
+                'haslink'     => can_access_course($course, $USER),
                 'category'    => $category ? format_string($category->name) : '-',
                 'teachers'    => implode(', ', $teachers),
                 'hasteachers' => !empty($teachers),

@@ -809,7 +809,7 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
     }
 
     // Móvil y tablet: una sola columna, en el orden del marcado
-    // (Acerca de mi, Accesos, Habilidades, Cursos).
+    // (Acerca de mi, Cursos, Mi inmobiliaria, Accesos: ver "Perfil v2" al final).
     @media (max-width: 991.98px) {
         .cpi-profile-grid {
             grid-template-columns: 1fr;
@@ -1061,31 +1061,6 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
 
         &:hover,
         &:focus {
-            color: $cpi-navy-dark;
-        }
-    }
-
-    // ---- Habilidades e intereses
-    .cpi-tags {
-        margin: 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .cpi-tag {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        border-radius: 50rem;
-        background: $cpi-grey-100;
-        color: $cpi-navy;
-        font-size: 13px;
-        line-height: 1.5;
-        text-decoration: none;
-
-        &:hover,
-        &:focus {
-            background: $cpi-grey-200;
             color: $cpi-navy-dark;
         }
     }
@@ -1611,5 +1586,97 @@ body.pagelayout-mydashboard .block_myoverview.no-header .card-text.content {
     .dropdown-toggle {
         white-space: normal;
         text-align: left;
+    }
+}
+
+// ============================================================================
+// Perfil v2 (2026-10): banda navy con avatar encimado, "Mi inmobiliaria" y orden
+// móvil. Marcado: templates/myprofile.mustache (+ myprofile_row).
+// ============================================================================
+.cpi-profile {
+    // Banda de 130px pegada arriba de la tarjeta "Acerca de mi": anula el padding
+    // superior y lateral de .cpi-card (16px 24px) y lleva el mismo radio solo arriba.
+    .cpi-profile-band {
+        position: relative;
+        height: 130px;
+        margin: -16px -24px 0;
+        border-radius: 5px 5px 0 0;
+        background-color: $cpi-navy;
+    }
+
+    // Engrane del perfil propio, en blanco sobre la banda, a la derecha. Abajo y no
+    // arriba: en móvil el botón flotante de Boost para el cajón de bloques (fixed, arriba
+    // a la derecha) tapaba la esquina superior.
+    .cpi-band-gear {
+        position: absolute;
+        bottom: 12px;
+        right: 16px;
+        color: #ffffff;
+        font-size: 18px;
+        line-height: 1;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            color: $cpi-gold-light;
+        }
+    }
+
+    // Avatar de 124px encimado en el borde de la banda (mitad arriba, mitad abajo),
+    // con un aro blanco que no cambia su tamaño.
+    .cpi-card-about .cpi-profile-avatar {
+        position: relative;
+        margin-top: -62px;
+
+        img,
+        .userinitials {
+            box-shadow: 0 0 0 4px #ffffff, rgba(187, 188, 191, 0.3) 0 0 12px 0;
+        }
+    }
+
+    .cpi-badge-gold {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 10px;
+        border-radius: 50rem;
+        background-color: $cpi-gold;
+        color: $cpi-navy;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.5;
+        white-space: nowrap;
+    }
+
+    .cpi-inmo-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 16px 0 0;
+    }
+
+    .cpi-card-inmo .cpi-help-text a {
+        color: $cpi-navy;
+        font-weight: 700;
+    }
+
+    // Móvil y tablet: una columna en el orden Acerca de mi, Cursos, Mi inmobiliaria,
+    // Accesos, Más. Las columnas pasan a display: contents para que las tarjetas sean
+    // hijas directas de la rejilla y se puedan ordenar; el espacio entre ellas lo da el gap.
+    @media (max-width: 991.98px) {
+        .cpi-profile-col {
+            display: contents;
+        }
+
+        .cpi-card {
+            margin-bottom: 0;
+            min-width: 0;
+        }
+
+        .cpi-card-about    { order: 1; }
+        .cpi-card-courses  { order: 2; }
+        .cpi-card-inmo     { order: 3; }
+        .cpi-card-accesos  { order: 4; }
+        .cpi-profile-more  { order: 5; }
     }
 }
