@@ -101,9 +101,6 @@ $templatecontext = [
     'contentright' => $contentright,
     'addblockleft' => $addblockleft,
     'addblockright' => $addblockright,
-    // Anuncios vigentes (Administración del sitio > Apariencia > Ajustes de personalización de tema > Publicidad),
-    // arriba de la lista de cursos. '' si no hay ninguno.
-    'cpiads' => \theme_cpi\local\ads::html($OUTPUT),
 ];
 
 echo $OUTPUT->render_from_template('theme_cpi/dashboard', $templatecontext);

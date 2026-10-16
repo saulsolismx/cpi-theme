@@ -1577,12 +1577,39 @@ $cpi-navbar-logo-height:   56px;
     }
 }
 
-// Alineación con la lista de cursos: el anuncio se pinta antes de main_content, fuera
-// del div[role=main] al que Boost da 15px de padding lateral desde md
-// (#page.drawers div[role="main"]). Mismo margen, para que los bordes coincidan.
-@include media-breakpoint-up(md) {
-    .cpi-dash-center > .cpi-ads {
-        margin-left: 15px;
-        margin-right: 15px;
+// Anuncio dentro de la tarjeta de cursos (theme_cpi\output\block_myoverview_renderer):
+// va en .card-text.content, delante de la fila de filtros y con su mismo ancho.
+// Ya está dentro de una tarjeta: sin borde ni sombra propios, solo el radio.
+.block_myoverview .cpi-ads {
+    border: 0;
+    box-shadow: none;
+    margin-bottom: 0.5rem; // + los 8px (.my-2) de la fila de filtros = 16px
+}
+
+// Tarjeta de cursos sin título (.no-header): el divisor del Bloque E y su padding
+// dejaban una franja vacía de 54px arriba de los filtros. Sin título no hay nada que
+// separar. .mt-3 es una utilidad de Bootstrap (margin-top: 1rem !important), así que
+// solo otro !important la anula; queda el padding del .card-body (16px), como a los lados.
+body.pagelayout-mydashboard .block_myoverview.no-header .card-text.content {
+    border-top: 0;
+    padding-top: 0;
+    margin-top: 0 !important;
+}
+
+// Línea de tiempo (block_timeline) en las columnas angostas del dashboard: los
+// desplegables "Próximos 7 días" / "Ordenar por fecha" no parten su texto y medían
+// 182–196px; a 1024px la columna derecha deja ~150px y empujaban la página 20px a la
+// derecha (scroll horizontal). Se limitan al ancho de la columna y el texto se parte.
+.cpi-dashboard-row .block_timeline {
+    .d-flex.flex-wrap > div,
+    .dropdown,
+    .dropdown-toggle {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .dropdown-toggle {
+        white-space: normal;
+        text-align: left;
     }
 }
