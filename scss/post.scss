@@ -1522,3 +1522,67 @@ $cpi-navbar-logo-height:   56px;
         }
     }
 }
+
+// ============================================================================
+// Anuncios del dashboard (theme_cpi/ads), arriba de la lista de cursos.
+// Tarjeta con el fondo, borde, radio y sombra de .card del tema; etiqueta
+// pequeña "Anuncio" en gris en lugar de un título.
+// ============================================================================
+.cpi-ads {
+    position: relative;
+    background-color: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 34, 86, 0.06);
+    overflow: hidden; // recorta la imagen al radio
+    margin-bottom: 1rem;
+
+    .cpi-ads-label {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 3; // sobre las imágenes y los puntos del carrusel
+        padding: 1px 8px;
+        border-radius: 50rem;
+        background-color: rgba(255, 255, 255, 0.85);
+        color: $cpi-grey-500;
+        font-size: 11px;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+    }
+
+    .cpi-ad-link {
+        display: block;
+    }
+
+    // Ancho completo, alto según la proporción de la imagen (1600×400 → 4:1).
+    .cpi-ad-img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .carousel-indicators {
+        margin-bottom: 0.5rem;
+
+        [data-bs-target] {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 0;
+            margin: 0 4px;
+            background-color: #ffffff;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+        }
+    }
+}
+
+// Alineación con la lista de cursos: el anuncio se pinta antes de main_content, fuera
+// del div[role=main] al que Boost da 15px de padding lateral desde md
+// (#page.drawers div[role="main"]). Mismo margen, para que los bordes coincidan.
+@include media-breakpoint-up(md) {
+    .cpi-dash-center > .cpi-ads {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+}
