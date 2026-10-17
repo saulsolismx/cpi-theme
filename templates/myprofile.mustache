@@ -26,7 +26,7 @@
 
     Context variables required for this template:
     * fullname, email, showemail, avatar, description, hasdescription
-    * canedit, editurl, canmessage, messageurl, messageattrs
+    * canedit, editurl, canmessage, messageurl, messageattrs, canresend, resendurl, resendlabel
     * escuela/personal: [{icon, label, value, empty}], redes: [{icon, title, haslink, url}]
     * accesos: [{icon, label, value}], isownprofile
     * courses: [{name, url, haslink, category, teachers, hasteachers}], hascourses, showcourses
@@ -83,6 +83,12 @@
                             {{#str}}message, message{{/str}}
                         </a>
                     {{/canmessage}}
+                    {{#canresend}}
+                        <a class="btn btn-sm btn-outline-secondary cpi-profile-resend" href="{{resendurl}}">
+                            <i class="fas fa-key" aria-hidden="true"></i>
+                            {{resendlabel}}
+                        </a>
+                    {{/canresend}}
                     {{#hasdescription}}<div class="cpi-profile-desc">{{{description}}}</div>{{/hasdescription}}
                 </div>
 

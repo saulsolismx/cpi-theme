@@ -167,6 +167,12 @@ class renderer extends \core_user\output\myprofile\renderer {
                 ['#cpi-message-user-button']);
         }
 
+        // --- Reenviar credenciales (plugin local_cpiwelcome, si está instalado): botón en
+        // "Acerca de mi" para quien tiene moodle/user:update en el sistema y solo si el usuario
+        // es elegible (cuenta manual, no suspendida, con correo; nunca el propio ni un admin).
+        $resendurl = class_exists('\\local_cpiwelcome\\local\\alta')
+            ? \local_cpiwelcome\local\alta::resend_url($user) : null;
+
         // --- Cursos: el propio alumno y los administradores ven todos; un compañero, solo
         // los que comparte con el usuario visto. Sin cursos que mostrar a un compañero, la
         // tarjeta no se pinta.
@@ -185,6 +191,9 @@ class renderer extends \core_user\output\myprofile\renderer {
             'canmessage'    => $canmessage,
             'messageurl'    => (new moodle_url('/message/index.php', ['id' => $user->id]))->out(false),
             'messageattrs'  => $messageattrs,
+            'canresend'     => $resendurl !== null,
+            'resendurl'     => $resendurl ? $resendurl->out(false) : '',
+            'resendlabel'   => $resendurl ? get_string('resend', 'local_cpiwelcome') : '',
 
             'escuela'       => $escuela,
             'hasescuela'    => !empty($escuela),
