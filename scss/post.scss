@@ -1939,5 +1939,12 @@ body.path-admin-report-customsql .csql_category {
     // Reportes de la categoría alineados con el texto del título (no con el ícono).
     .csql_category_reports {
         margin-left: 1.5rem;
+
+        // Subtítulos de frecuencia ("A petición", "A diario"…): un h3 del plugin que quedaba del
+        // mismo tamaño que el nombre de la categoría; se bajan a h5, en gris.
+        h3 {
+            font-size: $h5-font-size;
+            color: #6b7280;
+        }
     }
 }
