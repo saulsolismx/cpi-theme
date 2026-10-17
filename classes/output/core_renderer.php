@@ -38,10 +38,36 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * acoplarse a la geometría de los drawers. El gate (solo vista de curso, id > 1)
      * vive en \theme_cpi\local\course_banner::html().
      *
+     * Dashboard (/my/, pagelayout mydashboard): sin el saludo "¡Bienvenido/a, …! 👋" /
+     * "¡Hola, …! 👋". No hay ajuste del sitio para quitarlo: lo pinta
+     * \core_user::welcome_message() una vez por sesión en la página de inicio, salvo que
+     * $USER->core_welcome_message ya esté puesto, que es lo que se hace aquí. El título
+     * "Inicio" se oculta solo visualmente en post.scss (sigue para lectores de pantalla).
+     *
      * @return string
      */
     public function full_header() {
+        global $USER;
+        if ($this->page->pagelayout === 'mydashboard' && isloggedin()) {
+            $USER->core_welcome_message = true;
+        }
         return \theme_cpi\local\course_banner::html($this, $this->page) . parent::full_header();
+    }
+
+    /**
+     * Dashboard fuera del modo edición: sin el botón "Personalizar esta página" del
+     * encabezado. El tema no hereda $THEME->haseditswitch de Boost, así que my/index.php lo
+     * pinta aunque el interruptor "Modo de edición" del navbar hace lo mismo; quitarlo deja el
+     * encabezado vacío y las tarjetas suben. En modo edición se conservan "Restablecer
+     * página a por defecto" y "Dejar de personalizar esta página".
+     *
+     * @return string
+     */
+    public function page_heading_button() {
+        if ($this->page->pagelayout === 'mydashboard' && !$this->page->user_is_editing()) {
+            return '';
+        }
+        return parent::page_heading_button();
     }
 
     /**

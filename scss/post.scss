@@ -1871,3 +1871,34 @@ body.pagelayout-mydashboard .block_myoverview.no-header .card-text.content {
         display: none;
     }
 }
+
+// ---- Dashboard (/my/): sin título visible ni saludo arriba de los bloques ----
+// El saludo se quita en core_renderer::full_header() y el botón "Personalizar esta
+// página" en page_heading_button() (fuera del modo edición). El h1 "Inicio" sigue en el
+// HTML para lectores de pantalla (visually-hidden). Fuera de edición el encabezado queda
+// vacío y no ocupa espacio: las tarjetas quedan a la distancia normal del navbar. En
+// modo edición se ve el encabezado con "Restablecer…" / "Dejar de personalizar…".
+body.pagelayout-mydashboard #page-header h1 {
+    @include visually-hidden;
+}
+// Fuera de edición el encabezado solo contiene el h1: se oculta entero de forma visual
+// (no display:none, para que el h1 siga en el árbol de accesibilidad) y se quita el
+// relleno superior de .main-inner (24px) y el margen de la fila de bloques (8px). Queda
+// el margen de 24px de .main-inner entre el navbar y las tarjetas.
+body.pagelayout-mydashboard:not(.editing) {
+    #page-header {
+        @include visually-hidden;
+    }
+    #page.drawers .main-inner {
+        padding-top: 0;
+
+        // En móvil el margen de .main-inner es de 8px (24px en escritorio): se completa
+        // con relleno para mantener ~24px bajo el navbar.
+        @include media-breakpoint-down(md) {
+            padding-top: 16px;
+        }
+    }
+    .cpi-dashboard-row {
+        margin-top: 0;
+    }
+}
