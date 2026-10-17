@@ -1902,3 +1902,42 @@ body.pagelayout-mydashboard:not(.editing) {
         margin-top: 0;
     }
 }
+
+// ---- Consultas ad hoc (report_customsql): encabezado de cada categoría ----
+// El styles.css del plugin pinta el chevron como background-image de .categoryname
+// (t/collapsed, t/expanded) sin background-size. En 5.x esos íconos son SVG sin ancho ni
+// alto propios, así que el navegador los estira a toda la altura del enlace (h2 de 32px) y,
+// con solo 18px de padding, el chevron enorme se monta sobre el título. Se fija el ícono
+// a 1rem, centrado verticalmente, con 0.5rem de separación; el título a tamaño h3 y el
+// conteo y "Show only …" a tamaño normal. Acotado a las páginas del plugin.
+body.path-admin-report-customsql .csql_category {
+    h2 {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        column-gap: 0.75rem;
+        row-gap: 0.25rem;
+        font-size: $h3-font-size;
+    }
+
+    .categoryname {
+        padding-left: 1.5rem; // 1rem del ícono + 0.5rem de separación
+        background-size: 1rem 1rem;
+        background-position: left center;
+    }
+
+    .reportcounts,
+    a.view-category {
+        font-size: $font-size-base;
+        font-weight: normal;
+    }
+
+    .reportcounts {
+        color: #6b7280; // gris 500
+    }
+
+    // Reportes de la categoría alineados con el texto del título (no con el ícono).
+    .csql_category_reports {
+        margin-left: 1.5rem;
+    }
+}
