@@ -757,6 +757,19 @@ body.pagelayout-incourse #page-header.header-maxwidth {
     max-width: 1500px;
 }
 
+// Mismo ancho amplio en los formularios de administración que Boost limita a 830px:
+// son pagelayout-admin + limitedwidth (/course/edit.php, /user/editadvanced.php y
+// /course/modedit.php, editar actividad). Las demás páginas admin (gestión de cursos,
+// búsqueda y ajustes del sitio, calificaciones) no llevan limitedwidth y ya van al
+// 100%, así que esta regla no las toca. Misma especificidad que la de curso/actividad
+// (1,4,1 y 1,3,1), sin !important.
+body.pagelayout-admin.limitedwidth #page.drawers .main-inner {
+    max-width: 1500px;
+}
+body.pagelayout-admin.limitedwidth #page-header.header-maxwidth {
+    max-width: 1500px;
+}
+
 // Dashboard: reducir el margen lateral a ~24px (antes ~72px: 3rem de #page.drawers +
 // 1.5rem de .main-inner). Se anula el padding de #page.drawers SOLO en el dashboard;
 // el único margen lateral queda el 1.5rem (24px) del .main-inner. Simétrico.
