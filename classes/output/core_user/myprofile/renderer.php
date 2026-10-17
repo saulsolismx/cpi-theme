@@ -130,6 +130,11 @@ class renderer extends \core_user\output\myprofile\renderer {
             ['icon' => 'fa-calendar', 'label' => 'Primer acceso', 'value' => dates::format($user->firstaccess)],
             ['icon' => 'fa-calendar', 'label' => 'Último acceso', 'value' => dates::format($user->lastaccess)],
         ];
+        // "Acceso vence" (local_cpiwelcome, campo accesovence): solo el propio alumno y los admins.
+        if ($canviewpersonal && class_exists('\\local_cpiwelcome\\local\\acceso')
+                && ($due = \local_cpiwelcome\local\acceso::get_due((int) $user->id))) {
+            $accesos[] = ['icon' => 'fa-hourglass-half', 'label' => 'Acceso vence', 'value' => dates::format($due, false)];
+        }
 
         // --- Descripción: va dentro de la tarjeta (§10). profile.php la imprime antes del
         // árbol; esa copia se oculta por CSS (.userprofile > .description) para no duplicarla.
