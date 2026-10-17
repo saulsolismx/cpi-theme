@@ -6,6 +6,7 @@ $callbacks = [
         'callback' => \theme_cpi\local\hooks\output\before_standard_head_html_generation::class . '::callback',
     ],
     // Alumnos en /user/view.php (perfil dentro de curso) → perfil de CPI (/user/profile.php).
+    // Alta estándar /user/editadvanced.php?id=-1 → /local/cpiwelcome/alta.php (salvo ?core=1).
     [
         'hook' => \core\hook\output\before_http_headers::class,
         'callback' => \theme_cpi\local\hooks\output\before_http_headers::class . '::callback',

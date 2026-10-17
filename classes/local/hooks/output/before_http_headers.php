@@ -34,21 +34,71 @@ defined('MOODLE_INTERNAL') || die();
  * moodle/user:viewalldetails en el curso) se quedan en view.php: ahí se gestionan roles e
  * inscripciones.
  *
+ * También: alta de usuario estándar (/user/editadvanced.php?id=-1) → "Alta de alumno (CPI)"
+ * (/local/cpiwelcome/alta.php), que manda la bienvenida en HTML. Ver redirect_new_user().
+ *
  * @package    theme_cpi
  */
 class before_http_headers {
 
     /**
-     * Redirige view.php al perfil de CPI cuando el visitante no gestiona el curso.
+     * Redirecciones de páginas del core a las de CPI.
      *
      * @param \core\hook\output\before_http_headers $hook
      */
     public static function callback(\core\hook\output\before_http_headers $hook): void {
         global $PAGE;
 
-        if (!$PAGE->has_set_url() || $PAGE->url->get_path(false) !== '/user/view.php') {
+        if (!$PAGE->has_set_url()) {
             return;
         }
+        switch ($PAGE->url->get_path(false)) {
+            case '/user/view.php':
+                self::redirect_course_profile();
+                break;
+            case '/user/editadvanced.php':
+                self::redirect_new_user();
+                break;
+        }
+    }
+
+    /**
+     * Alta de usuario nuevo (/user/editadvanced.php?id=-1) → /local/cpiwelcome/alta.php.
+     *
+     * El formulario estándar crea la cuenta y el core manda en ese momento el correo en
+     * texto plano ("Cuenta de nuevo usuario"); alta.php manda la bienvenida en HTML. Así el
+     * botón "Agregar usuario" de la lista de usuarios y el menú Cuentas › Agregar usuario
+     * llevan a la página de CPI.
+     *
+     * No se redirige:
+     * - con ?core=1 (enlace "Usar el formulario estándar de Moodle" de alta.php);
+     * - en POST: el formulario estándar se envía a editadvanced.php?id=-1 sin core=1 y, si
+     *   la validación falla, se vuelve a pintar; redirigir perdería lo capturado;
+     * - al editar usuarios existentes (id > 0);
+     * - si local_cpiwelcome no está instalado o falta moodle/user:create (la que exige
+     *   alta.php), para no mandar a una página que no abriría.
+     */
+    private static function redirect_new_user(): void {
+        global $PAGE;
+
+        if ((int) $PAGE->url->get_param('id') !== -1
+                || optional_param('core', 0, PARAM_BOOL)
+                || ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+            return;
+        }
+        if (!class_exists(\local_cpiwelcome\local\alta::class)
+                || !has_capability('moodle/user:create', \context_system::instance())) {
+            return;
+        }
+        redirect(new \moodle_url('/local/cpiwelcome/alta.php'));
+    }
+
+    /**
+     * Redirige view.php al perfil de CPI cuando el visitante no gestiona el curso.
+     */
+    private static function redirect_course_profile(): void {
+        global $PAGE;
+
         $userid = (int) $PAGE->url->get_param('id');
         $courseid = (int) $PAGE->url->get_param('course');
         if (!$userid || !$courseid || $courseid == SITEID || !isloggedin() || isguestuser()) {
