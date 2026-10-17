@@ -1093,36 +1093,82 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
         color: $wl-empty;
     }
 
-    // ---- Tarjeta Cursos
-    .cpi-table-wrap {
-        overflow-x: auto; // la tabla puede ser más ancha que la columna en pantallas chicas
-    }
+    // ---- Tarjeta Cursos: programas (categorías) plegables con avance.
+    // Barras navy sobre gris claro con radio; la del programa, más gruesa. Sin bordes de
+    // tabla: filas con separador sutil. En móvil, nombre arriba y barra debajo.
+    .cpi-program {
+        border-bottom: 1px solid $cpi-grey-200;
 
-    .cpi-courses {
-        width: 100%;
-        margin: 0;
-        font-size: 14px;
-        line-height: 18.2px;
-        color: $wl-text;
-        border-collapse: collapse;
-
-        th {
-            font-weight: 700;
-            color: $wl-subtle;
-            padding: 0.5rem 0.75rem 0.5rem 0;
-            border-bottom: 1px solid $cpi-grey-200;
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 0.5rem 0.75rem 0.5rem 0;
-            border-bottom: 1px solid $cpi-grey-100;
-            vertical-align: top;
-        }
-
-        tr:last-child td {
+        &:last-child {
             border-bottom: none;
         }
+
+        & + .cpi-program {
+            margin-top: 0.25rem;
+        }
+    }
+
+    .cpi-program-head {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+        cursor: pointer;
+        list-style: none; // sin el triángulo nativo: se pinta un chevron propio
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &::before {
+            content: "\f054"; // fa-chevron-right
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 11px;
+            color: $cpi-navy;
+            transition: transform 0.15s ease;
+        }
+    }
+
+    .cpi-program[open] > .cpi-program-head::before {
+        transform: rotate(90deg);
+    }
+
+    .cpi-program-title {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .cpi-program-name {
+        font-family: $headings-font-family; // Poppins
+        font-weight: 600;
+        font-size: 15px;
+        line-height: 1.3;
+        color: $cpi-navy;
+    }
+
+    .cpi-program-count {
+        font-size: 12px;
+        color: $wl-text;
+    }
+
+    .cpi-program-courses {
+        list-style: none;
+        margin: 0 0 0.5rem;
+        padding: 0 0 0 1.4rem; // alineado con el texto del encabezado (tras el chevron)
+    }
+
+    .cpi-course {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.55rem 0;
+        border-top: 1px solid $cpi-grey-100;
+        font-size: 14px;
+        line-height: 1.35;
+        color: $wl-text;
 
         a {
             color: $cpi-navy;
@@ -1132,6 +1178,110 @@ $wl-social:  #9b9ea3;   // iconos de redes sin valor
             &:focus {
                 text-decoration: underline;
             }
+        }
+    }
+
+    .cpi-course-name {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+    }
+
+    .cpi-course-status {
+        flex: 0 0 auto;
+        font-size: 14px;
+
+        &.cpi-status-done {
+            color: $cpi-gold;
+        }
+
+        &.cpi-status-doing {
+            color: $cpi-navy;
+        }
+
+        &.cpi-status-todo {
+            color: $wl-empty;
+        }
+    }
+
+    .cpi-badge-hidden {
+        flex: 0 0 auto;
+        padding: 1px 8px;
+        border-radius: 50rem;
+        background-color: $cpi-grey-200;
+        color: $wl-subtle;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    // Mismo ancho para el bloque del programa y el de cada curso: las barras quedan alineadas.
+    .cpi-course-progress,
+    .cpi-program-progress {
+        flex: 0 0 180px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .cpi-progress {
+        flex: 1 1 auto;
+        display: block;
+        height: 6px;
+        border-radius: 50rem;
+        background-color: $cpi-grey-200;
+        overflow: hidden;
+    }
+
+    .cpi-progress-bar {
+        display: block;
+        height: 100%;
+        border-radius: 50rem;
+        background-color: $cpi-navy;
+    }
+
+    .cpi-progress-program {
+        height: 10px;
+    }
+
+    .cpi-progress-pct {
+        flex: 0 0 auto;
+        min-width: 2.6em;
+        text-align: right;
+        font-size: 12px;
+        font-weight: 600;
+        color: $cpi-navy;
+    }
+
+    .cpi-progress-none {
+        margin-left: auto;
+        color: $wl-empty;
+    }
+
+    @include media-breakpoint-down(sm) {
+        .cpi-program-head {
+            flex-wrap: wrap;
+            row-gap: 0.4rem;
+        }
+
+        .cpi-program-title {
+            flex-basis: calc(100% - 2rem); // fuerza el salto: la barra va debajo del nombre
+        }
+
+        .cpi-program-progress {
+            flex: 1 1 100%;
+            padding-left: 1.4rem; // bajo el nombre del programa, tras el chevron
+        }
+
+        .cpi-course {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.35rem;
+        }
+
+        .cpi-course-progress {
+            flex: 1 1 auto;
         }
     }
 

@@ -29,7 +29,9 @@
     * canedit, editurl, canmessage, messageurl, messageattrs, canresend, resendurl, resendlabel
     * escuela/personal: [{icon, label, value, empty}], redes: [{icon, title, haslink, url}]
     * accesos: [{icon, label, value}], isownprofile
-    * courses: [{name, url, haslink, category, teachers, hasteachers}], hascourses, showcourses
+    * coursegroups: [{name, total, completed, hasprogress, percent, open,
+        courses: [{name, url, haslink, hidden, hasprogress, percent, isdone, isdoing, istodo, statuslabel}]}],
+      hascourses, showcourses, showprogress (avance y estado: solo el propio alumno y los admins)
     * inmo: {has, rows, comparte, inventario, hasinventario, whatsapp, haswhatsapp, hasbuttons, isown, editurl}
     * hasmore, more
 
@@ -154,27 +156,51 @@
                         <h3 class="cpi-card-title">Cursos</h3>
                     </div>
                     {{#hascourses}}
-                        <div class="cpi-table-wrap">
-                            <table class="cpi-courses">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Nombre del curso</th>
-                                        <th scope="col">Categoría</th>
-                                        <th scope="col">Profesor</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                        {{#coursegroups}}
+                            <details class="cpi-program" {{#open}}open{{/open}}>
+                                <summary class="cpi-program-head">
+                                    <span class="cpi-program-title">
+                                        <span class="cpi-program-name">{{name}}</span>
+                                        {{#showprogress}}<span class="cpi-program-count">{{completed}}/{{total}} cursos completados</span>{{/showprogress}}
+                                    </span>
+                                    {{#showprogress}}{{#hasprogress}}
+                                        <span class="cpi-program-progress">
+                                            <span class="cpi-progress cpi-progress-program" role="progressbar" aria-valuenow="{{percent}}" aria-valuemin="0" aria-valuemax="100" aria-label="Avance del programa {{name}}">
+                                                <span class="cpi-progress-bar" style="width: {{percent}}%"></span>
+                                            </span>
+                                            <span class="cpi-progress-pct">{{percent}}%</span>
+                                        </span>
+                                    {{/hasprogress}}{{/showprogress}}
+                                </summary>
+                                <ul class="cpi-program-courses">
                                     {{#courses}}
-                                        <tr>
-                                            <td>{{#haslink}}<a href="{{url}}">{{name}}</a>{{/haslink}}{{^haslink}}{{name}}{{/haslink}}</td>
-                                            <td>{{category}}</td>
-                                            {{#hasteachers}}<td>{{teachers}}</td>{{/hasteachers}}
-                                            {{^hasteachers}}<td class="cpi-empty">Sin profesores</td>{{/hasteachers}}
-                                        </tr>
+                                        <li class="cpi-course">
+                                            <span class="cpi-course-name">
+                                                {{#showprogress}}
+                                                    {{#isdone}}<i class="fa-solid fa-circle-check cpi-course-status cpi-status-done" title="{{statuslabel}}" aria-hidden="true"></i>{{/isdone}}
+                                                    {{#isdoing}}<i class="fa-solid fa-circle-half-stroke cpi-course-status cpi-status-doing" title="{{statuslabel}}" aria-hidden="true"></i>{{/isdoing}}
+                                                    {{#istodo}}<i class="fa-regular fa-circle cpi-course-status cpi-status-todo" title="{{statuslabel}}" aria-hidden="true"></i>{{/istodo}}
+                                                    <span class="visually-hidden">{{statuslabel}}:</span>
+                                                {{/showprogress}}
+                                                {{#haslink}}<a href="{{url}}">{{name}}</a>{{/haslink}}{{^haslink}}<span>{{name}}</span>{{/haslink}}
+                                                {{#hidden}}<span class="cpi-badge-hidden">Oculto</span>{{/hidden}}
+                                            </span>
+                                            {{#showprogress}}
+                                                <span class="cpi-course-progress">
+                                                    {{#hasprogress}}
+                                                        <span class="cpi-progress" role="progressbar" aria-valuenow="{{percent}}" aria-valuemin="0" aria-valuemax="100" aria-label="Avance de {{name}}">
+                                                            <span class="cpi-progress-bar" style="width: {{percent}}%"></span>
+                                                        </span>
+                                                        <span class="cpi-progress-pct">{{percent}}%</span>
+                                                    {{/hasprogress}}
+                                                    {{^hasprogress}}<span class="cpi-progress-none" title="Sin seguimiento de finalización">—</span>{{/hasprogress}}
+                                                </span>
+                                            {{/showprogress}}
+                                        </li>
                                     {{/courses}}
-                                </tbody>
-                            </table>
-                        </div>
+                                </ul>
+                            </details>
+                        {{/coursegroups}}
                     {{/hascourses}}
                     {{^hascourses}}
                         <p class="cpi-help-text">Sin cursos inscritos.</p>

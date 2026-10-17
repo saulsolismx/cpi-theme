@@ -173,11 +173,12 @@ class renderer extends \core_user\output\myprofile\renderer {
         $resendurl = class_exists('\\local_cpiwelcome\\local\\alta')
             ? \local_cpiwelcome\local\alta::resend_url($user) : null;
 
-        // --- Cursos: el propio alumno y los administradores ven todos; un compañero, solo
-        // los que comparte con el usuario visto. Sin cursos que mostrar a un compañero, la
-        // tarjeta no se pinta.
+        // --- Cursos: el propio alumno y los administradores ven todos, con avance; un
+        // compañero, solo los nombres de los que comparte con el usuario visto. Los ocultos,
+        // solo los administradores. Sin cursos que mostrar a un compañero, la tarjeta no se
+        // pinta.
         $seeall = $canviewpersonal;
-        $courses = $this->courses_for($user, $seeall);
+        $groups = $this->course_groups($user, $seeall, $canviewpersonal, $canviewall);
 
         $data = [
             'fullname'      => fullname($user),
@@ -205,9 +206,10 @@ class renderer extends \core_user\output\myprofile\renderer {
             'accesos'       => $accesos,
             'isownprofile'  => $currentuser,
 
-            'courses'       => $courses,
-            'hascourses'    => !empty($courses),
-            'showcourses'   => !empty($courses) || $seeall,
+            'coursegroups'  => $groups,
+            'hascourses'    => !empty($groups),
+            'showcourses'   => !empty($groups) || $seeall,
+            'showprogress'  => $canviewpersonal,
 
             'inmo'          => $this->inmobiliaria($fields, $currentuser, $editurl),
 
@@ -395,52 +397,101 @@ class renderer extends \core_user\output\myprofile\renderer {
     }
 
     /**
-     * Tarjeta "Cursos": Nombre del curso | Categoría | Profesor.
+     * Tarjeta "Cursos": cursos agrupados por categoría (programa), con avance.
      *
      * Cursos en los que está inscrito el usuario visto. Si el visitante no es el propio
-     * usuario ni un administrador ($seeall = false), solo los que comparten ambos. El nombre
-     * enlaza al curso solo si el visitante puede entrar (can_access_course). Profesor =
-     * usuarios con el rol editingteacher en el curso.
+     * usuario ni un administrador ($seeall = false), solo los que comparten ambos. Grupos en
+     * el orden de las categorías del sitio y cursos en el orden de su categoría. El nombre
+     * enlaza al curso solo si el visitante puede entrar (can_access_course).
+     *
+     * Avance (solo con $showprogress: el propio alumno y moodle/user:viewalldetails) =
+     * \core_completion\progress::get_course_progress_percentage, el mismo del Área personal;
+     * null si el curso no tiene seguimiento de finalización. Estado:
+     * - completado: curso completado o 100 %;
+     * - en curso: avance > 0, o sin seguimiento pero ya entró al curso (user_lastaccess);
+     * - sin empezar: lo demás.
+     * Avance del programa = promedio de los cursos del grupo con seguimiento.
      *
      * @param \stdClass $user usuario visto
-     * @param bool $seeall
-     * @return array
+     * @param bool $seeall todos sus cursos (si no, solo los compartidos con el visitante)
+     * @param bool $showprogress mostrar avance y estado
+     * @param bool $showhidden mostrar cursos ocultos (administradores), con etiqueta "Oculto"
+     * @return array grupos para la plantilla
      */
-    private function courses_for(\stdClass $user, bool $seeall): array {
+    private function course_groups(\stdClass $user, bool $seeall, bool $showprogress, bool $showhidden): array {
         global $DB, $USER;
 
-        $courses = enrol_get_users_courses($user->id, true, ['category']);
+        // enrol_get_all_users_courses() y no enrol_get_users_courses(): esta última quita los
+        // cursos ocultos que el usuario VISTO no puede ver, y el administrador debe verlos.
+        $courses = enrol_get_all_users_courses($user->id, true, 'id, category, fullname, visible, enablecompletion, sortorder',
+            'sortorder ASC');
         if (!$seeall) {
             $mine = enrol_get_users_courses($USER->id, true, 'id');
             $courses = array_intersect_key($courses, $mine);
         }
-        $teacherrole = $DB->get_field('role', 'id', ['shortname' => 'editingteacher']);
+        $courses = array_filter($courses, fn($c) => $c->visible || $showhidden);
+        if (!$courses) {
+            return [];
+        }
+        $lastaccess = $showprogress
+            ? $DB->get_records_menu('user_lastaccess', ['userid' => $user->id], '', 'courseid, timeaccess') : [];
+        $categories = $DB->get_records_list('course_categories', 'id', array_unique(array_column($courses, 'category')),
+            'sortorder', 'id, name, sortorder');
 
-        $rows = [];
-        foreach ($courses as $course) {
-            $coursecontext = \context_course::instance($course->id);
-            if (!$course->visible && !has_capability('moodle/course:viewhiddencourses', $coursecontext)) {
+        $groups = [];
+        foreach ($categories as $category) {
+            $rows = [];
+            $percentages = [];
+            $completed = 0;
+            foreach ($courses as $course) {
+                if ($course->category != $category->id) {
+                    continue;
+                }
+                $coursecontext = \context_course::instance($course->id);
+                $row = [
+                    'name'    => format_string($course->fullname, true, ['context' => $coursecontext]),
+                    'url'     => (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
+                    'haslink' => can_access_course($course, $USER),
+                    'hidden'  => !$course->visible,
+                ];
+                if ($showprogress) {
+                    $pct = \core_completion\progress::get_course_progress_percentage($course, $user->id);
+                    $pct = $pct === null ? null : (int) floor($pct);
+                    if ($pct === 100) {
+                        $status = 'done';
+                        $completed++;
+                    } else if ($pct > 0 || ($pct === null && !empty($lastaccess[$course->id]))) {
+                        $status = 'doing';
+                    } else {
+                        $status = 'todo';
+                    }
+                    if ($pct !== null) {
+                        $percentages[] = $pct;
+                    }
+                    $row += [
+                        'hasprogress' => $pct !== null,
+                        'percent'     => (int) $pct,
+                        'isdone'      => $status === 'done',
+                        'isdoing'     => $status === 'doing',
+                        'istodo'      => $status === 'todo',
+                        'statuslabel' => ['done' => 'Completado', 'doing' => 'En curso', 'todo' => 'Sin empezar'][$status],
+                    ];
+                }
+                $rows[] = $row;
+            }
+            if (!$rows) {
                 continue;
             }
-
-            $teachers = [];
-            if ($teacherrole) {
-                foreach (get_role_users($teacherrole, $coursecontext, false, 'u.id, ' . implode(', ',
-                        array_map(fn($f) => 'u.' . $f, \core_user\fields::get_name_fields())), 'u.lastname, u.firstname') as $t) {
-                    $teachers[$t->id] = fullname($t);
-                }
-            }
-
-            $category = \core_course_category::get($course->category, IGNORE_MISSING, true);
-            $rows[] = [
-                'name'        => format_string($course->fullname, true, ['context' => $coursecontext]),
-                'url'         => (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
-                'haslink'     => can_access_course($course, $USER),
-                'category'    => $category ? format_string($category->name) : '-',
-                'teachers'    => implode(', ', $teachers),
-                'hasteachers' => !empty($teachers),
+            $groups[] = [
+                'name'        => format_string($category->name, true, ['context' => \context_coursecat::instance($category->id)]),
+                'courses'     => $rows,
+                'total'       => count($rows),
+                'completed'   => $completed,
+                'hasprogress' => !empty($percentages),
+                'percent'     => $percentages ? (int) round(array_sum($percentages) / count($percentages)) : 0,
+                'open'        => empty($groups), // El primer programa abierto, los demás cerrados.
             ];
         }
-        return $rows;
+        return $groups;
     }
 }
