@@ -766,7 +766,14 @@ body.pagelayout-incourse #page-header.header-maxwidth {
 body.pagelayout-admin.limitedwidth #page.drawers .main-inner {
     max-width: 1500px;
 }
-body.pagelayout-admin.limitedwidth #page-header.header-maxwidth {
+
+// Título (#page-header) de todas las páginas pagelayout-admin a 1500px, tengan o no
+// limitedwidth: sin esto, en el árbol de calificaciones (grade/edit/tree, sin
+// limitedwidth, contenido al 100%) el título se queda en los 830px de Boost, centrado
+// y desalineado. Se excluyen .path-admin y .format-site, donde Boost ya lo deja sin
+// tope (admin/search.php, ajustes del sitio): ahí bajarlo a 1500px lo desalinearía.
+// (1,4,1) vence a .header-maxwidth (0,1,0) sin !important.
+body.pagelayout-admin:not(.path-admin):not(.format-site) #page-header.header-maxwidth {
     max-width: 1500px;
 }
 
