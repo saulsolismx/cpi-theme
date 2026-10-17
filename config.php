@@ -19,6 +19,13 @@ $THEME->usescourseindex = true;
 // de celdas que Boost no espera.
 $THEME->yuicssmodules = [];
 
+// Igual que Boost, que lo declara y NO se hereda (theme_config solo copia las propiedades del
+// config.php del tema activo): el interruptor "Modo de edición" del navbar es el único
+// control de edición. Sin esto, curso, calificador, administración, base de datos, etc.
+// mostraban además los botones antiguos "Activar edición" / "Activar la edición de bloques",
+// y el dashboard "Personalizar esta página".
+$THEME->haseditswitch = true;
+
 // Dashboard del alumno: layout propio de 3 columnas (25/50/25, sin drawer de bloques).
 // Override SOLO de 'mydashboard'; los demás layouts se heredan de boost (cascada).
 $THEME->layouts['mydashboard'] = [

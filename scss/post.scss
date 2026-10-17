@@ -1873,8 +1873,8 @@ body.pagelayout-mydashboard .block_myoverview.no-header .card-text.content {
 }
 
 // ---- Dashboard (/my/): sin título visible ni saludo arriba de los bloques ----
-// El saludo se quita en core_renderer::full_header() y el botón "Personalizar esta
-// página" en page_heading_button() (fuera del modo edición). El h1 "Inicio" sigue en el
+// El saludo se quita en core_renderer::full_header(); el botón "Personalizar esta
+// página" ya no existe con $THEME->haseditswitch = true (config.php). El h1 "Inicio" sigue en el
 // HTML para lectores de pantalla (visually-hidden). Fuera de edición el encabezado queda
 // vacío y no ocupa espacio: las tarjetas quedan a la distancia normal del navbar. En
 // modo edición se ve el encabezado con "Restablecer…" / "Dejar de personalizar…".
